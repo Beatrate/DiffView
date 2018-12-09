@@ -1,0 +1,26 @@
+From 0a6463fb6372f5a8ba3fcc5e27eaa48d6db308be Mon Sep 17 00:00:00 2001
+From: mrkurbatov <32720129+mrkurbatov@users.noreply.github.com>
+Date: Thu, 30 Nov 2017 23:20:04 +0300
+Subject: [PATCH] Update HelloWorld.java
+
+---
+ HelloWorld.java | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/HelloWorld.java b/HelloWorld.java
+index 414f902..33dcd2b 100644
+--- a/HelloWorld.java
++++ b/HelloWorld.java
+@@ -19,8 +19,9 @@
+ public class HelloWorld {
+ 
+     public static void main(String[] args) {
+-        // Prints "Hello, World" to the terminal window.
+-        System.out.println("Hello, World");
++        // Prints "Hello, World"
++        System.out.print("Hello, ");
++        System.out.println("World");
+     }
+ 
+ }
+ 
