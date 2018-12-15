@@ -1,24 +1,22 @@
 package com.beatrate.diffview
 
-import io.reflectoring.diffparser.api.UnifiedDiffParser
-import org.apache.commons.io.input.ReaderInputStream
 import org.junit.Test
-import java.io.*
+import java.io.File
+import java.time.LocalDateTime
+import java.time.Month
+import java.time.ZoneOffset
+import kotlin.test.assertEquals
 
 class ParserTest {
-    private val filePath = "src/test/resources/HelloWorld.java"
-    private val patchPath = "src/test/resources/HelloWorld.patch"
-
     @Test
-    fun test() {
-        val original = File(filePath)
-        val reader = BufferedReader(InputStreamReader(FileInputStream(patchPath), Charsets.UTF_8))
-        for (i in 1..6) {
-            reader.readLine()
-        }
-        val parser = UnifiedDiffParser()
-        val diffs = parser.parse(ReaderInputStream(reader, Charsets.UTF_8))
-
-        println(diffs.count())
+    fun headerTest() {
+        val file = File("src/test/resources/HelloWorld.patch")
+        val parser = DiffParser()
+        parser.parse(file)
+        assertEquals("mrkurbatov", parser.author)
+        assertEquals("Update HelloWorld.java", parser.message)
+        val date = LocalDateTime.of(2017, Month.NOVEMBER, 30, 23, 20, 4)
+        val instant = date.atOffset(ZoneOffset.ofHours(3)).toInstant()
+        assertEquals(instant, parser.date)
     }
 }
