@@ -12,11 +12,18 @@ class ParserTest {
     fun headerTest() {
         val file = File("src/test/resources/HelloWorld.patch")
         val parser = DiffParser()
-        parser.parse(file)
-        assertEquals("mrkurbatov", parser.author)
-        assertEquals("Update HelloWorld.java", parser.message)
+        val commit = parser.parse(file)
+        assertEquals("mrkurbatov", commit.author)
+        assertEquals("Update HelloWorld.java", commit.message)
         val date = LocalDateTime.of(2017, Month.NOVEMBER, 30, 23, 20, 4)
         val instant = date.atOffset(ZoneOffset.ofHours(3)).toInstant()
-        assertEquals(instant, parser.date)
+        assertEquals(instant, commit.date)
+    }
+
+    @Test
+    fun multipleChangeTest() {
+        val file = File("src/test/resources/MaxHeap.patch")
+        val parser = DiffParser()
+        parser.parse(file)
     }
 }

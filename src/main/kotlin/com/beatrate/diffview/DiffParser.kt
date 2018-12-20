@@ -11,41 +11,41 @@ import org.apache.tika.parser.ParseContext
 import org.apache.tika.sax.BodyContentHandler
 
 class DiffParser {
+    private data class HeaderParseResult(val message: String, val author: String, val date: Instant, val body: String)
+
     private val BODY_SEPARATOR = "---\n"
+    private val NULL_PATH = "/dev/null"
 
-    public var message: String = ""
-        private set
-    public var author: String = ""
-        private set
-    public var date: Instant = Instant.EPOCH
-        private set
-
-
-    public fun parse(diffFile: File) {
-        var body = parseHeader(diffFile)
-
-        assert(body.startsWith(BODY_SEPARATOR))
-        body = body.drop(BODY_SEPARATOR.length)
-
-        parseBody(body)
+    public fun parse(diffFile: File): Commit {
+        val (message, author, date, body) = parseHeader(diffFile)
+        val diffs = parseBody(body)
+        return Commit(message, author, date, diffs)
     }
 
-    private fun parseHeader(file: File): String {
+    private fun parseHeader(file: File): HeaderParseResult {
         val mailParser = MboxParser()
         mailParser.isTracking = true
-        val handler = BodyContentHandler()
+        val handler = BodyContentHandler(-1)
         mailParser.parse(FileInputStream(file), handler, Metadata(), ParseContext())
-        assert(mailParser.trackingMetadata.size == 1)
-        val header = mailParser.trackingMetadata[0]
-        message = header!!.get("subject").removePrefix("[PATCH]").trim()
-        author = header!!.get("Message:From-Name")
-        date = Instant.parse(header!!.get("Creation-Date"))
-        return handler.toString()
+
+        if(mailParser.trackingMetadata.isEmpty()) throw DiffParserException("Missing metadata.")
+
+        val header = mailParser.trackingMetadata[0]!!
+        val message = header.get("subject")?.removePrefix("[PATCH]")?.trim() ?: throw DiffParserException("Missing commit message.")
+        val author = header.get("Message:From-Name") ?: throw DiffParserException("Missing commit author.")
+        val date = Instant.parse(header.get("Creation-Date") ?: throw DiffParserException("Missing commit date."))
+
+        var body = handler.toString()
+        if(!body.startsWith(BODY_SEPARATOR)) throw DiffParserException("Commit header end not found.")
+        body = body.drop(BODY_SEPARATOR.length)
+        return HeaderParseResult(message, author, date, body)
     }
 
-    private fun parseBody(body: String) {
+    private fun parseBody(body: String): List<Diff> {
         val parser = UnifiedDiffParser()
         val stream = ByteArrayInputStream(body.toByteArray(Charsets.UTF_8))
-        val diffs = parser.parse(stream)
+        val rawDiffs = parser.parse(stream)
+        val diffs = mutableListOf<Diff>()
+        return diffs
     }
 }
