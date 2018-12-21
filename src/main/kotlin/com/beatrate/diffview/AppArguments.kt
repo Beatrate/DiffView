@@ -1,5 +1,6 @@
 package com.beatrate.diffview
 
+import com.beatrate.diffview.visualizer.VisualizationMode
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.SystemExitException
 

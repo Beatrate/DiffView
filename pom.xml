@@ -56,16 +56,6 @@
             <artifactId>kotlinx-html-jvm</artifactId>
             <version>${kotlinx.html.version}</version>
         </dependency>
-        <dependency>
-            <groupId>io.reflectoring.diffparser</groupId>
-            <artifactId>diffparser</artifactId>
-            <version>1.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-parsers</artifactId>
-            <version>1.19.1</version>
-        </dependency>
     </dependencies>
 
     <build>
