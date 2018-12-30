@@ -3,7 +3,7 @@ package com.beatrate.diffview.common
 enum class DiffKind {
     CREATE, DELETE, CHANGE;
 
-    companion object Parser {
+    companion object {
         private const val NULL_PATH = "/dev/null"
 
         fun fromPaths(fromPath: String, toPath: String): DiffKind {
