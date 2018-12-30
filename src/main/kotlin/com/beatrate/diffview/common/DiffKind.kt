@@ -1,4 +1,4 @@
-package com.beatrate.diffview.parser
+package com.beatrate.diffview.common
 
 enum class DiffKind {
     CREATE, DELETE, CHANGE;

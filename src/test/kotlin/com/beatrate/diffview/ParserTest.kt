@@ -4,9 +4,6 @@ import com.beatrate.diffview.parser.DiffParser
 import org.junit.Test
 import java.io.File
 import java.time.*
-import java.time.temporal.Temporal
-import java.time.temporal.TemporalAccessor
-import java.util.*
 import kotlin.test.assertEquals
 
 class ParserTest {
