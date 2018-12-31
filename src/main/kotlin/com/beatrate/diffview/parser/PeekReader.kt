@@ -8,17 +8,17 @@ import java.io.File
 class PeekReader(reader: Reader) : Closeable {
     private val rawReader: BufferedReader = if (reader is BufferedReader) reader else BufferedReader(reader)
     private var nextLine: String? = rawReader.readLine()
-    val empty
+    val isEmpty
         get() = nextLine == null
-    val notEmpty
-        get() = !empty
+    val isNotEmpty
+        get() = !isEmpty
 
-    fun peekOr(action: () -> String): String = if (empty) action() else nextLine!!
+    fun peekOrElse(action: () -> String): String = if (isEmpty) action() else nextLine!!
 
-    fun peek(): String = peekOr { throw DiffParserException("Unexpected end of file") }
+    fun peek(): String = peekOrElse { throw DiffParseException("Unexpected end of file") }
 
-    fun nextOr(action: () -> String): String {
-        if (empty) {
+    fun nextOrElse(action: () -> String): String {
+        if (isEmpty) {
             return action()
         }
         val result = nextLine!!
@@ -26,7 +26,7 @@ class PeekReader(reader: Reader) : Closeable {
         return result
     }
 
-    fun next(): String = nextOr { throw DiffParserException("Unexpected end of file") }
+    fun next(): String = nextOrElse { throw DiffParseException("Unexpected end of file") }
 
     override fun close() = rawReader.close()
 }

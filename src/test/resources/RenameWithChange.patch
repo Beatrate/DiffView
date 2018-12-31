@@ -1,0 +1,20 @@
+From d4738f30a1813d1a6ffa34de0d65f209efe63606 Mon Sep 17 00:00:00 2001
+From: Nikita Ivanov <inik4us@gmail.com>
+Date: Mon, 31 Dec 2018 16:55:18 +0300
+Subject: [PATCH] Update and rename Simple01 to Simple02
+
+---
+ Simple01 => Simple02 | 1 +
+ 1 file changed, 1 insertion(+)
+ rename Simple01 => Simple02 (50%)
+
+diff --git a/Simple01 b/Simple02
+similarity index 50%
+rename from Simple01
+rename to Simple02
+index e965047..9db896d 100644
+--- a/Simple01
++++ b/Simple02
+@@ -1 +1,2 @@
+ Hello
++there

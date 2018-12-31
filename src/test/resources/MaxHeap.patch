@@ -21,26 +21,26 @@ index 57ec63f..603a4a9 100644
  		private List<T> collection;
 -		private Comparer<T> comparer = Comparer<T>.Default;
 +		private IComparer<T> comparer = Comparer<T>.Default;
-
+ 
  		public int Count => collection.Count;
  		public bool IsEmpty => collection.Count == 0;
 @@ -17,17 +17,28 @@ public MaxHeap() : this(0, null)
-
+ 
  		}
-
+ 
 -		public MaxHeap(Comparer<T> comparer) : this(0, comparer)
 +		public MaxHeap(IComparer<T> comparer) : this(0, comparer)
  		{
-
+ 
  		}
-
+ 
 -		public MaxHeap(int capacity, Comparer<T> comparer)
 +		public MaxHeap(int capacity, IComparer<T> comparer)
  		{
  			collection = new List<T>(capacity);
  			this.comparer = comparer ?? Comparer<T>.Default;
  		}
-
+ 
 +		public MaxHeap(IReadOnlyList<T> elements, IComparer<T> comparer)
 +		{
 +			this.comparer = comparer ?? Comparer<T>.Default;
@@ -57,28 +57,28 @@ index 57ec63f..603a4a9 100644
  			int lastIndex = collection.Count - 1;
 @@ -47,12 +58,17 @@ private void Heapify(int nodeIndex, int lastIndex)
  			int largest = nodeIndex;
-
+ 
  			// If collection[left] > collection[nodeIndex]
 -			if(left <= lastIndex && comparer.Compare(collection[left], collection[nodeIndex]) > 0)
 +			if((left <= lastIndex) && (comparer.Compare(collection[left], collection[nodeIndex]) > 0))
 +			{
  				largest = left;
 +			}
-+
-
++				
+ 
  			// If collection[right] > collection[largest]
 -			if(right <= lastIndex && comparer.Compare(collection[right], collection[largest]) > 0)
 +			if((right <= lastIndex) && (comparer.Compare(collection[right], collection[largest]) > 0))
 +			{
  				largest = right;
 +			}
-
+ 
  			if(largest != nodeIndex)
  			{
 @@ -126,36 +142,20 @@ public void Clear()
  			}
  		}
-
+ 
 -		public void RebuildHeap()
 +		public static MaxHeap<T> Union(MaxHeap<T> a, MaxHeap<T> b)
  		{
@@ -106,17 +106,17 @@ index 57ec63f..603a4a9 100644
 +			{
 +				throw new ArgumentNullException("Illegal union with a null heap.");
 +			}
-
+ 
 -			while(!firstMaxHeap.IsEmpty)
 -				newHeap.Add(firstMaxHeap.ExtractMax());
 +			int size = a.Count + b.Count;
 +			var heap = new MaxHeap<T>(size, Comparer<T>.Default);
-
+ 
 -			while(!secondMaxHeap.IsEmpty)
 -				newHeap.Add(secondMaxHeap.ExtractMax());
 +			heap.collection.AddRange(a.collection);
 +			heap.collection.AddRange(b.collection);
-
+ 
 -			return newHeap;
 +			return heap;
  		}
@@ -133,10 +133,10 @@ index 9ecb988..ce63c0e 100644
 +using System.Linq;
  using Xunit;
  using Algorithm;
-
+ 
 @@ -24,7 +25,17 @@ public void SmallHeap(params int[] elements)
  		}
-
+ 
  		[Fact]
 -		public void Initialize()
 +		public void Removal()
@@ -156,7 +156,7 @@ index 9ecb988..ce63c0e 100644
 @@ -32,9 +43,78 @@ public void Initialize()
  			AssertSorted(heap, elements);
  		}
-
+ 
 +		[Fact]
 +		public void Peek()
 +		{
@@ -240,7 +240,7 @@ index 6f1b3ca..5416e1d 100644
 @@ -442,14 +442,7 @@ public bool Delete(TKey key)
  							AvlNode<TKey, TValue> successorParent = successor.Parent;
  							AvlNode<TKey, TValue> successorRight = successor.Right;
-
+ 
 -							if(successorParent.Left == successor)
 -							{
 -								successorParent.Left = successorRight;
@@ -250,7 +250,7 @@ index 6f1b3ca..5416e1d 100644
 -								successorParent.Right = successorRight;
 -							}
 +							successorParent.Left = successorRight;
-
+ 
  							if(successorRight != null)
  							{
 diff --git a/AvlTreeTests/AvlTreeDeleteTests.cs b/AvlTreeTests/AvlTreeDeleteTests.cs
@@ -260,7 +260,7 @@ index 2e95825..4176ed9 100644
 @@ -246,6 +246,15 @@ public void ExitRebalanceLeftEarly()
  			AssertTreeValid("30+:{20-:{10,25+:{24,~}},35-:{~,36}}", tree);
  		}
-
+ 
 +		[Fact]
 +		public void Foo()
 +		{
