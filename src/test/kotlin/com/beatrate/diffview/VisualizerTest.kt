@@ -30,7 +30,6 @@ class VisualizerTest {
             Line(kind, if (line.isEmpty()) line else line.substring(1))
         }
         val hunk = Hunk("@@ -19,8 +19,9 @@", LineRange(19, 8), LineRange(19, 9), lines)
-        val originalFile = File("src/test/resources/HelloWorld.java")
 
         // Test here...
     }

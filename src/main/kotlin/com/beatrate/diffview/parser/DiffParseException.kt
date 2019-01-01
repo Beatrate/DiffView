@@ -1,3 +1,3 @@
 package com.beatrate.diffview.parser
 
-class DiffParseException(message: String = "") : Exception(message)
+class DiffParseException(message: String) : Exception(message)

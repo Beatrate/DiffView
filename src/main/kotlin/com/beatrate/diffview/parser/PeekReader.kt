@@ -1,12 +1,11 @@
 package com.beatrate.diffview.parser
 
 import java.io.Closeable
-import java.io.Reader
 import java.io.BufferedReader
 import java.io.File
 
-class PeekReader(reader: Reader) : Closeable {
-    private val rawReader: BufferedReader = if (reader is BufferedReader) reader else BufferedReader(reader)
+class PeekReader(reader: BufferedReader) : Closeable {
+    private val rawReader: BufferedReader = reader
     private var nextLine: String? = rawReader.readLine()
     val isEmpty
         get() = nextLine == null

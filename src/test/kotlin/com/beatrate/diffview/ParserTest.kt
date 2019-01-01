@@ -86,6 +86,12 @@ class ParserTest {
     }
 
     @Test
+    fun noNewline() {
+        val diff = parseDiff("src/test/resources/NoNewline.patch")
+        assertEquals("\\ No newline at end of file" , diff.hunks.first().lines.last().content)
+    }
+
+    @Test
     fun create() {
         val diff = parseDiff("src/test/resources/Create.patch")
         assertEquals(DiffKind.CREATE, diff.kind)

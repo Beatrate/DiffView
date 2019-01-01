@@ -1,0 +1,18 @@
+From 68ab1ad9d45813c9a8ce816e354590cd87c6082c Mon Sep 17 00:00:00 2001
+From: Nikita Ivanov <inik4us@gmail.com>
+Date: Tue, 1 Jan 2019 16:42:01 +0300
+Subject: [PATCH] Added NoNewline
+
+---
+ NoNewline | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 NoNewline
+
+diff --git a/NoNewline b/NoNewline
+new file mode 100644
+index 0000000..b6fc4c6
+--- /dev/null
++++ b/NoNewline
+@@ -0,0 +1 @@
++hello
+\ No newline at end of file
