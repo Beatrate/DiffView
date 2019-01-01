@@ -1,36 +1,21 @@
 package com.beatrate.diffview
 
-import com.beatrate.diffview.common.*
+import com.beatrate.diffview.generator.DiffReportGenerator
+import com.beatrate.diffview.generator.ReportMode
+import com.beatrate.diffview.parser.DiffParser
 import org.junit.Test
 import java.io.File
-import java.lang.IllegalArgumentException
 
 class DiffReportGeneratorTest {
     @Test
     fun test() {
-        val content =
-""" public class HelloWorld {
-
-     public static void main(String[] args) {
--        // Prints "Hello, World" to the terminal window.
--        System.out.println("Hello, World");
-+        // Prints "Hello, World"
-+        System.out.print("Hello, ");
-+        System.out.println("World");
-     }
-
- }"""
-        val lines = content.lines().map {line ->
-            val kind = when {
-                line.isBlank() || line.first() == ' '  -> LineKind.REGULAR
-                line.first() == '-' -> LineKind.DELETED
-                line.first() == '+' -> LineKind.ADDED
-                else -> throw IllegalArgumentException("line")
-            }
-            Line(kind, if (line.isEmpty()) line else line.substring(1))
-        }
-        val hunk = Hunk("@@ -19,8 +19,9 @@", LineRange(19, 8), LineRange(19, 9), lines)
-
-        // Test here...
+        val patch = File("src/test/resources/OneFileMultipleHunks.patch")
+        generate("src/test/resources/original/Big.txt", "target/unified.html", patch.absolutePath, ReportMode.UNIFIED)
+        generate("src/test/resources/original/Big.txt", "target/split.html", patch.absolutePath, ReportMode.SPLIT)
     }
+
+    private fun parse(path: String) = DiffParser().parse(File(path))
+
+    private fun generate(originalPath: String, reportPath: String, patchPath: String, mode: ReportMode) =
+            DiffReportGenerator().generate(File(originalPath), File(reportPath), parse(patchPath), mode)
 }

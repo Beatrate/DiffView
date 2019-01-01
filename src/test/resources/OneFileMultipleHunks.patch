@@ -1,16 +1,16 @@
 From 51a645becc551048e5b8c8e7ba97efd44f60288e Mon Sep 17 00:00:00 2001
 From: Nikita Ivanov <inik4us@gmail.com>
 Date: Tue, 1 Jan 2019 13:43:22 +0300
-Subject: [PATCH] Update Big
+Subject: [PATCH] Update Big.txt
 
 ---
- Big | 8 ++++----
+ Big.txt | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Big b/Big
+diff --git a/Big.txt b/Big.txt
 index 915ea08..3666a8c 100644
---- a/Big
-+++ b/Big
+--- a/Big.txt
++++ b/Big.txt
 @@ -1,5 +1,5 @@
 -Vacuum collision. Orbits diverge. Farewell, love.
 -- David Brin
