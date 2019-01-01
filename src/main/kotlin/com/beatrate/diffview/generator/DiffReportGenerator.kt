@@ -124,7 +124,7 @@ class DiffReportGenerator {
                 tableLayout = FIXED
             }
             ".line-cell .code-cell" {
-                fontFamily = "Verdana, Geneva, sans-serif"
+                // Use only monospaced fonts in here.
                 fontSize = 14.px
                 lineHeight = 20.px
             }
