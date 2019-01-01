@@ -8,7 +8,7 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 
-class ParserTest {
+class DiffParserTest {
     @Test
     fun header() {
         val commit = parse("src/test/resources/OneFileOneHunk.patch")

@@ -5,7 +5,7 @@ import org.junit.Test
 import java.io.File
 import java.lang.IllegalArgumentException
 
-class VisualizerTest {
+class DiffReportGeneratorTest {
     @Test
     fun test() {
         val content =
