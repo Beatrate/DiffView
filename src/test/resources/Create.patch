@@ -1,0 +1,21 @@
+From 334d252a49176dbd5712c14b5975ef7f08a98689 Mon Sep 17 00:00:00 2001
+From: Nikita Ivanov <inik4us@gmail.com>
+Date: Tue, 1 Jan 2019 12:34:06 +0300
+Subject: [PATCH] Create SingleChange
+
+---
+ SingleChange | 5 +++++
+ 1 file changed, 5 insertions(+)
+ create mode 100644 SingleChange
+
+diff --git a/SingleChange b/SingleChange
+new file mode 100644
+index 0000000..1ae4d10
+--- /dev/null
++++ b/SingleChange
+@@ -0,0 +1,5 @@
++Gown removed carelessly. Head, less so.
++- Joss Whedon
++
++Automobile warranty expires. So does engine.
++- Stan Lee

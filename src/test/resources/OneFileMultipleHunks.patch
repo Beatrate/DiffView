@@ -1,0 +1,29 @@
+From 51a645becc551048e5b8c8e7ba97efd44f60288e Mon Sep 17 00:00:00 2001
+From: Nikita Ivanov <inik4us@gmail.com>
+Date: Tue, 1 Jan 2019 13:43:22 +0300
+Subject: [PATCH] Update Big
+
+---
+ Big | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/Big b/Big
+index 915ea08..3666a8c 100644
+--- a/Big
++++ b/Big
+@@ -1,5 +1,5 @@
+-Vacuum collision. Orbits diverge. Farewell, love.
+-- David Brin
++“Cellar?” “Gate to, uh … hell, actually.”
++- Ronald D. Moore
+ 
+ Gown removed carelessly. Head, less so.
+ - Joss Whedon
+@@ -25,5 +25,5 @@ no carrier.
+ With bloody hands, I say good-bye.
+ - Frank Miller
+ 
+-Wasted day. Wasted life. Dessert, please.
+-- Steven Meretzky
++Epitaph: Foolish humans, never escaped Earth.
++- Vernor Vinge

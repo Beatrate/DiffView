@@ -1,0 +1,44 @@
+From 0ec31c324c06bd460951963d0906219a9a7078fa Mon Sep 17 00:00:00 2001
+From: Nikita Ivanov <inik4us@gmail.com>
+Date: Tue, 1 Jan 2019 15:38:34 +0300
+Subject: [PATCH] Changed multiple files in multiple places
+
+---
+ Big  | 4 ++--
+ Long | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/Big b/Big
+index 7155f17..6e07110 100644
+--- a/Big
++++ b/Big
+@@ -1,5 +1,5 @@
+ “Cellar?” “Gate to, uh … hell, actually.”
+-- Ronald D. Moore
++- Unknown
+ 
+ Gown removed carelessly. Head, less so.
+ - Joss Whedon
+@@ -15,4 +15,4 @@ With bloody hands, I say good-bye.
+ - Frank Miller
+ 
+ Epitaph: Foolish humans, never escaped Earth.
+-- Vernor Vinge
++- Unknown
+diff --git a/Long b/Long
+index a96bce2..1c965cf 100644
+--- a/Long
++++ b/Long
+@@ -1,5 +1,5 @@
+ It cost too much, staying human.
+-- Bruce Sterling
++- Someone
+ 
+ We kissed. She melted. Mop please!
+ - James Patrick Kelly
+@@ -14,4 +14,4 @@ I’m dead. I’ve missed you. Kiss … ?
+ - Neil Gaiman
+ 
+ The baby’s blood type? Human, mostly.
+-- Orson Scott Card
++- Someone

@@ -1,0 +1,13 @@
+From ed7a3d2d136dcc35170af8517b9fd1e24b989092 Mon Sep 17 00:00:00 2001
+From: Nikita Ivanov <inik4us@gmail.com>
+Date: Tue, 1 Jan 2019 14:31:41 +0300
+Subject: [PATCH] Delete Empty
+
+---
+ Empty | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ delete mode 100644 Empty
+
+diff --git a/Empty b/Empty
+deleted file mode 100644
+index e69de29..0000000

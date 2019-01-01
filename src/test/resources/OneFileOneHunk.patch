@@ -1,0 +1,22 @@
+From 68b0167869ef005388bcfd9bc28c4af155a9c87f Mon Sep 17 00:00:00 2001
+From: Nikita Ivanov <inik4us@gmail.com>
+Date: Tue, 1 Jan 2019 12:34:41 +0300
+Subject: [PATCH] Update SingleChange
+
+---
+ SingleChange | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/SingleChange b/SingleChange
+index 1ae4d10..cb90582 100644
+--- a/SingleChange
++++ b/SingleChange
+@@ -1,5 +1,8 @@
+ Gown removed carelessly. Head, less so.
+ - Joss Whedon
+ 
++Failed SAT. Lost scholarship. Invented rocket.
++- William Shatner
++
+ Automobile warranty expires. So does engine.
+ - Stan Lee

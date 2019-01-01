@@ -1,0 +1,24 @@
+From ee67b767d684657a9af4a2e70c0a932454cb85e8 Mon Sep 17 00:00:00 2001
+From: Nikita Ivanov <inik4us@gmail.com>
+Date: Tue, 1 Jan 2019 15:14:27 +0300
+Subject: [PATCH] Delete SingleChange
+
+---
+ SingleChange | 8 --------
+ 1 file changed, 8 deletions(-)
+ delete mode 100644 SingleChange
+
+diff --git a/SingleChange b/SingleChange
+deleted file mode 100644
+index 0988599..0000000
+--- a/SingleChange
++++ /dev/null
+@@ -1,8 +0,0 @@
+-Gown removed carelessly. Head, less so.
+-- Stan Lee
+-
+-Failed SAT. Lost scholarship. Invented rocket.
+-- David Brin
+-
+-Automobile warranty expires. So does engine.
+-- Stan Lee

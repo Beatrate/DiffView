@@ -19,12 +19,13 @@ class DiffParser {
             const val DELETED_LINE = "-"
             const val REGULAR_LINE = " "
             const val NO_NEWLINE = "\\ No newline at end of file"
-
             const val DIFF_HEADER = "diff --git "
-            const val NULL_PATH = "/dev/null"
+            const val NEW_FILE = "new file mode"
+            const val DELETED_FILE = "deleted file mode"
         }
     }
 
+    private val pathRegex = Regex("a/(.+) b/(.+)")
     private val rangeRegex = Regex("""\s*@@\s+-(\d+)(?:,(\d+))?\s+\+(\d+)(?:,(\d+))?\s+@@\s*(.+)?""")
 
     fun parse(file: File): Commit {
@@ -42,7 +43,7 @@ class DiffParser {
         val format = DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss Z")
         val date = parsePrefixed(reader, Prefix.DATE)
                 .runCatching { ZonedDateTime.from(format.parse(this)) }
-                .getOrElse { throw DiffParseException() }
+                .getOrElse { throw DiffParseException("Unexpected date format") }
         val message = parsePrefixed(reader, Prefix.MESSAGE).removePrefix("[PATCH] ")
         return CommitHeader(author, date, message)
     }
@@ -61,7 +62,7 @@ class DiffParser {
 
     private fun parseDiff(reader: PeekReader): Diff {
         val (oldFile, newFile, kind) = parseDiffHeader(reader)
-        while(reader.isNotEmpty && !reader.peek().startsWith(Prefix.FILE_RANGE)) {
+        while (reader.isNotEmpty && !reader.peek().startsWith(Prefix.FILE_RANGE)) {
             // Reached the end of this diff.
             if (reader.peek().startsWith(Prefix.DIFF_HEADER)) break
             reader.next()
@@ -72,20 +73,12 @@ class DiffParser {
 
     private fun parseDiffHeader(reader: PeekReader): DiffHeader {
         val line = parsePrefixed(reader, Prefix.DIFF_HEADER)
-        var i = line.indexOf("b/")
-        if (i == -1) i = line.indexOf(' ')
-        if (i < 1) throw DiffParseException()
-
-        val oldFile = line.substring(0, i - 1).removePrefix("a/")
-        val newFile = line.substring(i).removePrefix("b/")
-
-        val wasNull = oldFile == Prefix.NULL_PATH
-        val isNull = newFile == Prefix.NULL_PATH
+        val (oldFile, newFile) = pathRegex.matchEntire(line)?.destructured ?: throw DiffParseException("Unexpected path format")
         val kind = when {
-            !wasNull && !isNull -> if(oldFile == newFile) DiffKind.CHANGE else DiffKind.RENAME
-            wasNull && !isNull -> DiffKind.CREATE
-            !wasNull && isNull -> DiffKind.DELETE
-            else -> throw DiffParseException()
+            oldFile != newFile -> DiffKind.RENAME
+            reader.peek().startsWith(Prefix.NEW_FILE) -> DiffKind.CREATE
+            reader.peek().startsWith(Prefix.DELETED_FILE) -> DiffKind.DELETE
+            else -> DiffKind.CHANGE
         }
         return DiffHeader(oldFile, newFile, kind)
     }
@@ -94,7 +87,7 @@ class DiffParser {
         val value = reader.next()
         val stripped = value.removePrefix(prefix)
         if (value.length == stripped.length) {
-            throw DiffParseException()
+            throw DiffParseException("Unexpected line, expected prefix: $prefix")
         }
         return stripped
     }
@@ -109,11 +102,11 @@ class DiffParser {
 
     private fun parseHunk(reader: PeekReader): Hunk {
         val unparsedRange = reader.next()
-        val rangeValues = rangeRegex.matchEntire(unparsedRange)?.groupValues ?: throw DiffParseException()
-        val oldStart = rangeValues[1].toInt()
-        val oldLength = if(rangeValues[2].isEmpty()) 1 else rangeValues[1].toInt()
-        val newStart = rangeValues[3].toInt()
-        val newLength = if(rangeValues[4].isEmpty()) 1 else rangeValues[4].toInt()
+        val rangeValues = rangeRegex.matchEntire(unparsedRange)?.groupValues ?: throw DiffParseException("Unexpected file range format")
+        val oldOffset = rangeValues[1].toInt()
+        val oldLength = if (rangeValues[2].isEmpty()) 1 else rangeValues[2].toInt()
+        val newOffset = rangeValues[3].toInt()
+        val newLength = if (rangeValues[4].isEmpty()) 1 else rangeValues[4].toInt()
 
         val lines = mutableListOf<Line>()
         while (reader.isNotEmpty) {
@@ -129,6 +122,6 @@ class DiffParser {
             lines.add(parsedLine)
             reader.next()
         }
-        return Hunk(unparsedRange, LineRange(oldStart, oldLength), LineRange(newStart, newLength), lines)
+        return Hunk(unparsedRange, LineRange(oldOffset, oldLength), LineRange(newOffset, newLength), lines)
     }
 }
