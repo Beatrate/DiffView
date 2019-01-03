@@ -4,6 +4,7 @@ import com.beatrate.diffview.common.*
 import java.io.File
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 class DiffParser {
     private data class CommitHeader(val author: String, val date: ZonedDateTime, val message: String)
@@ -40,7 +41,7 @@ class DiffParser {
         reader.next()
         // Drop email inside <>.
         val author = parsePrefixed(reader, Prefix.AUTHOR).substringBeforeLast('<').trim()
-        val format = DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss Z")
+        val format = DateTimeFormatter.ofPattern("EEE, d MMM yyyy HH:mm:ss Z", Locale.US)
         val date = parsePrefixed(reader, Prefix.DATE)
                 .runCatching { ZonedDateTime.from(format.parse(this)) }
                 .getOrElse { throw DiffParseException("Unexpected date format") }
