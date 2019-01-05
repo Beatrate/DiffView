@@ -74,7 +74,8 @@ class DiffParser {
 
     private fun parseDiffHeader(reader: PeekReader): DiffHeader {
         val line = parsePrefixed(reader, Prefix.DIFF_HEADER)
-        val (oldFile, newFile) = pathRegex.matchEntire(line)?.destructured ?: throw DiffParseException("Unexpected path format")
+        val (oldFile, newFile) = pathRegex.matchEntire(line)?.destructured
+            ?: throw DiffParseException("Unexpected path format")
         val kind = when {
             oldFile != newFile -> DiffKind.RENAME
             reader.peek().startsWith(Prefix.NEW_FILE) -> DiffKind.CREATE
@@ -103,7 +104,8 @@ class DiffParser {
 
     private fun parseHunk(reader: PeekReader): Hunk {
         val unparsedRange = reader.next()
-        val rangeValues = rangeRegex.matchEntire(unparsedRange)?.groupValues ?: throw DiffParseException("Unexpected file range format")
+        val rangeValues = rangeRegex.matchEntire(unparsedRange)?.groupValues
+            ?: throw DiffParseException("Unexpected file range format")
         val oldOffset = rangeValues[1].toInt()
         val oldLength = if (rangeValues[2].isEmpty()) 1 else rangeValues[2].toInt()
         val newOffset = rangeValues[3].toInt()
@@ -112,15 +114,15 @@ class DiffParser {
         val lines = mutableListOf<Line>()
         while (reader.isNotEmpty) {
             val line = reader.peek()
-            val parsedLine = when {
-                line.startsWith(Prefix.DELETED_LINE) -> Line(LineKind.DELETED, line.drop(1))
-                line.startsWith(Prefix.ADDED_LINE) -> Line(LineKind.ADDED, line.drop(1))
-                line.startsWith(Prefix.REGULAR_LINE) -> Line(LineKind.REGULAR, line.drop(1))
-                line == Prefix.NO_NEWLINE -> Line(LineKind.REGULAR, line)
+            val kind = when {
+                line.startsWith(Prefix.DELETED_LINE) -> LineKind.DELETED
+                line.startsWith(Prefix.ADDED_LINE) -> LineKind.ADDED
+                line.startsWith(Prefix.REGULAR_LINE) -> LineKind.REGULAR
+                line == Prefix.NO_NEWLINE -> LineKind.REGULAR
                 else -> null
             } ?: break
 
-            lines.add(parsedLine)
+            lines.add(Line(kind, line))
             reader.next()
         }
         return Hunk(unparsedRange, LineRange(oldOffset, oldLength), LineRange(newOffset, newLength), lines)
