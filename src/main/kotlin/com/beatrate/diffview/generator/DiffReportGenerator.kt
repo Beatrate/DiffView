@@ -5,10 +5,15 @@ import azadev.kotlin.css.colors.*
 import azadev.kotlin.css.dimens.*
 import com.beatrate.diffview.common.Commit
 import com.beatrate.diffview.common.Diff
+import com.beatrate.diffview.common.LineKind
 import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
 import java.io.File
 import java.time.format.DateTimeFormatter
+import java.util.ArrayList
+
+
+
 
 class DiffReportGenerator {
     fun generate(originalFile: File, reportFile: File, commit: Commit, mode: ReportMode) {
@@ -38,7 +43,7 @@ class DiffReportGenerator {
                         p { +diff.oldFile }
                     }
                     table("diff-table") {
-                        if (mode == ReportMode.UNIFIED) generateUnified(originalFile)
+                        if (mode == ReportMode.UNIFIED) generateUnified(originalFile, diff)
                         else generateSplit(originalFile)
                     }
                 }
@@ -46,15 +51,57 @@ class DiffReportGenerator {
         }
     }
 
-    private fun TABLE.generateUnified(originalFile: File) {
-        var counter = 0
+    private fun TABLE.generateUnified(originalFile: File, diff: Diff) {
         tbody {
             originalFile.useLines {
-                for (line in it) tr {
-                    td("line-cell") { +(++counter).toString() }
-                    td { +line }
+                var originalFileCounter = 1
+                var newFileCounter = 1
+                var hunksCounter = 0
+                var changed = false
+                var iteratorCounter = 1
+                for (line in it) {
+                    if ((diff.hunks.size > 0) && (diff.hunks.size > hunksCounter)) {
+                        val endOfHunk = diff.hunks[hunksCounter].fromRange.offset + diff.hunks[hunksCounter].fromRange.length - 1
+                        if ((diff.hunks[hunksCounter].fromRange.offset <= originalFileCounter) &&
+                            (endOfHunk >= originalFileCounter)) {
+                            var i = 0
+                            while (diff.hunks[hunksCounter].lines.size > i) tr {
+                                if (diff.hunks[hunksCounter].lines[i].kind == LineKind.DELETED) {
+                                    td("deleted-num-cell") { +(originalFileCounter).toString() }
+                                    td("deleted-num-cell") { +"" }
+                                    td("deleted-line-cell") { +("-  " + diff.hunks[hunksCounter].lines[i].content) }
+                                    ++originalFileCounter
+                                } else if (diff.hunks[hunksCounter].lines[i].kind == LineKind.ADDED) {
+                                    td("added-num-cell") { +"" }
+                                    td("added-num-cell") { +(newFileCounter).toString() }
+                                    td("added-line-cell") { +("+  " + diff.hunks[hunksCounter].lines[i].content) }
+                                    ++newFileCounter
+                                } else if (diff.hunks[hunksCounter].lines[i].kind == LineKind.REGULAR) {
+                                    td("line-cell") { +(originalFileCounter).toString() }
+                                    td("line-cell") { +(newFileCounter).toString() }
+                                    td { +("   " + diff.hunks[hunksCounter].lines[i].content) }
+                                    ++originalFileCounter
+                                    ++newFileCounter
+                                }
+                                ++i
+                            }
+                            changed = true
+                            ++hunksCounter
+                        }
+                    }
+                    if ((!changed) && (iteratorCounter == originalFileCounter)) tr {
+                        td("line-cell") { +(originalFileCounter).toString() }
+                        td("line-cell") { +(newFileCounter).toString() }
+                        td { +("   " + line) }
+                        ++originalFileCounter
+                        ++newFileCounter
+                    } else {
+                        changed = false
+                    }
+                    ++iteratorCounter
                 }
             }
+
         }
     }
 
@@ -65,7 +112,7 @@ class DiffReportGenerator {
             originalFile.useLines {
                 for (line in it) tr {
                     td("line-cell") { +(++counter).toString() }
-                    td { +line }
+                    td("diff-table-split") { +line }
                     td("line-cell") { +counter.toString() }
                     td { +"" }
                 }
@@ -116,6 +163,7 @@ class DiffReportGenerator {
                 fontSize = 12.px
             }
             ".diff-table" {
+                borderCollapse = "collapse"
                 width = 100.percent
                 marginTop = 10.px
                 marginBottom = 10.px
@@ -129,7 +177,8 @@ class DiffReportGenerator {
                 lineHeight = 20.px
             }
             ".line-cell" {
-                minWidth = 50.px
+                height = 25.px
+                minWidth = 30.px
                 width = 1.percent
                 color = rgba(27, 31, 35, 0.3)
                 textAlign = RIGHT
@@ -137,6 +186,37 @@ class DiffReportGenerator {
                 paddingRight = 10.px
                 overflow = HIDDEN
                 textOverflow = ELLIPSIS
+            }
+            ".deleted-num-cell" {
+//                ref = ".line-cell" //не вышло, нет такого.
+                height = 25.px
+                minWidth = 30.px
+                width = 1.percent
+                color = rgba(27, 31, 35, 0.3)
+                backgroundColor = hex("#ffcdd2")
+                textAlign = RIGHT
+                paddingLeft = 10.px
+                paddingRight = 10.px
+                overflow = HIDDEN
+                textOverflow = ELLIPSIS
+            }
+            ".added-num-cell" {
+                height = 25.px
+                minWidth = 30.px
+                width = 1.percent
+                color = rgba(27, 31, 35, 0.3)
+                backgroundColor = hex("#dcedc8")
+                textAlign = RIGHT
+                paddingLeft = 10.px
+                paddingRight = 10.px
+                overflow = HIDDEN
+                textOverflow = ELLIPSIS
+            }
+            ".deleted-line-cell" {
+                backgroundColor = hex("#ffebee")
+            }
+            ".added-line-cell" {
+                backgroundColor = hex("#f1f8e9")
             }
             ".diff-table-split .line-cell" {
                 width = 40.px
