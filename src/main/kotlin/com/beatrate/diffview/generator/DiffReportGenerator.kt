@@ -5,14 +5,12 @@ import azadev.kotlin.css.colors.*
 import azadev.kotlin.css.dimens.*
 import com.beatrate.diffview.common.Commit
 import com.beatrate.diffview.common.Diff
+import com.beatrate.diffview.common.Line
 import com.beatrate.diffview.common.LineKind
 import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
 import java.io.File
 import java.time.format.DateTimeFormatter
-import java.util.ArrayList
-
-
 
 
 class DiffReportGenerator {
@@ -21,10 +19,13 @@ class DiffReportGenerator {
         val diff = commit.diffs.find { it.oldFile == originalFile.name }
             ?: throw DiffReportGenerateException("Diff isn't related to original file")
         reportFile.writeText("")
-        reportFile.printWriter().use { it.appendHTML().html { create(originalFile, commit, diff, mode) } }
+
+        reportFile.printWriter().use { writer ->
+            writer.appendHTML().html { originalFile.useLines { create(it, commit, diff, mode) } }
+        }
     }
 
-    private fun HTML.create(originalFile: File, commit: Commit, diff: Diff, mode: ReportMode) {
+    private fun HTML.create(originalLines: Sequence<String>, commit: Commit, diff: Diff, mode: ReportMode) {
         head {
             meta { charset = "UTF-8" }
             title { +commit.message }
@@ -43,80 +44,98 @@ class DiffReportGenerator {
                         p { +diff.oldFile }
                     }
                     table("diff-table") {
-                        if (mode == ReportMode.UNIFIED) generateUnified(originalFile, diff)
-                        else generateSplit(originalFile)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun TABLE.generateUnified(originalFile: File, diff: Diff) {
-        tbody {
-            originalFile.useLines {
-                var originalFileCounter = 1
-                var newFileCounter = 1
-                var hunksCounter = 0
-                var changed = false
-                var iteratorCounter = 1
-                for (line in it) {
-                    if ((diff.hunks.size > 0) && (diff.hunks.size > hunksCounter)) {
-                        val endOfHunk = diff.hunks[hunksCounter].fromRange.offset + diff.hunks[hunksCounter].fromRange.length - 1
-                        if ((diff.hunks[hunksCounter].fromRange.offset <= originalFileCounter) &&
-                            (endOfHunk >= originalFileCounter)) {
-                            var i = 0
-                            while (diff.hunks[hunksCounter].lines.size > i) tr {
-                                if (diff.hunks[hunksCounter].lines[i].kind == LineKind.DELETED) {
-                                    td("deleted-num-cell") { +(originalFileCounter).toString() }
-                                    td("deleted-num-cell") { +"" }
-                                    td("deleted-line-cell") { +("-  " + diff.hunks[hunksCounter].lines[i].content) }
-                                    ++originalFileCounter
-                                } else if (diff.hunks[hunksCounter].lines[i].kind == LineKind.ADDED) {
-                                    td("added-num-cell") { +"" }
-                                    td("added-num-cell") { +(newFileCounter).toString() }
-                                    td("added-line-cell") { +("+  " + diff.hunks[hunksCounter].lines[i].content) }
-                                    ++newFileCounter
-                                } else if (diff.hunks[hunksCounter].lines[i].kind == LineKind.REGULAR) {
-                                    td("line-cell") { +(originalFileCounter).toString() }
-                                    td("line-cell") { +(newFileCounter).toString() }
-                                    td { +("   " + diff.hunks[hunksCounter].lines[i].content) }
-                                    ++originalFileCounter
-                                    ++newFileCounter
-                                }
-                                ++i
+                        tbody {
+                            if (mode == ReportMode.UNIFIED) unified(originalLines, diff)
+                            else {
+                                classes += "diff-table-split"
+                                splitView(originalLines, diff)
                             }
-                            changed = true
-                            ++hunksCounter
                         }
                     }
-                    if ((!changed) && (iteratorCounter == originalFileCounter)) tr {
-                        td("line-cell") { +(originalFileCounter).toString() }
-                        td("line-cell") { +(newFileCounter).toString() }
-                        td { +("   " + line) }
-                        ++originalFileCounter
-                        ++newFileCounter
-                    } else {
-                        changed = false
-                    }
-                    ++iteratorCounter
                 }
             }
-
         }
     }
 
-    private fun TABLE.generateSplit(originalFile: File) {
-        classes += "diff-table-split"
-        var counter = 0
-        tbody {
-            originalFile.useLines {
-                for (line in it) tr {
-                    td("line-cell") { +(++counter).toString() }
-                    td("diff-table-split") { +line }
-                    td("line-cell") { +counter.toString() }
-                    td { +"" }
+    private fun TBODY.unified(lines: Sequence<String>, diff: Diff) {
+        val lineIterator = lines.iterator()
+        var oldIndex = 1
+        var newIndex = 1
+        for (hunk in diff.hunks) {
+            val difference = newIndex - oldIndex
+            // Draw regular until start.
+            for (i in oldIndex until hunk.fromRange.offset) {
+                renderLine(Line(LineKind.REGULAR, lineIterator.next()), i, (i + difference))
+            }
+            oldIndex = hunk.fromRange.offset
+            newIndex = hunk.toRange.offset
+
+            for (i in 1..hunk.fromRange.length) lineIterator.next()
+
+            // Draw all hunk lines.
+            for (line in hunk.lines) {
+                renderLine(line, oldIndex, newIndex)
+                when (line.kind) {
+                    LineKind.DELETED -> ++oldIndex
+                    LineKind.ADDED -> ++newIndex
+                    LineKind.REGULAR -> {
+                        ++oldIndex
+                        ++newIndex
+                    }
                 }
             }
+        }
+        // Draw leftover regular.
+        while (lineIterator.hasNext()) {
+            renderLine(Line(LineKind.REGULAR, lineIterator.next()), oldIndex, newIndex)
+            ++oldIndex
+            ++newIndex
+        }
+    }
+
+    private fun TBODY.renderLine(line: Line, oldIndex: Int, newIndex: Int) {
+        tr {
+            when (line.kind) {
+                LineKind.DELETED -> {
+                    renderDeletedLine(line.content, oldIndex)
+                }
+                LineKind.ADDED -> {
+                    renderAddedLine(line.content, newIndex)
+                }
+                LineKind.REGULAR -> {
+                    renderRegularLine(line.content, oldIndex, newIndex)
+                }
+            }
+        }
+    }
+
+    private fun TR.renderDeletedLine(line: String, counter: Int) {
+        td("line-cell deleted") { +counter.toString() }
+        td("line-cell deleted")
+        td("code-cell deleted") { +line }
+    }
+
+    private fun TR.renderAddedLine(line: String, counter: Int) {
+        td("line-cell added")
+        td("line-cell added") { +counter.toString() }
+        td("code-cell added") { +line }
+    }
+
+    private fun TR.renderRegularLine(line: String, origCounter: Int, newCounter: Int) {
+        td("line-cell") { +origCounter.toString() }
+        td("line-cell") { +newCounter.toString() }
+        td("code-cell") { +line }
+    }
+
+    
+
+    private fun TBODY.splitView(lines: Sequence<String>, diff: Diff) {
+        var counter = 0
+        for (line in lines) tr {
+            td("line-cell") { +(++counter).toString() }
+            td("diff-table-split") { +line }
+            td("line-cell") { +counter.toString() }
+            td { +"" }
         }
     }
 
@@ -187,38 +206,19 @@ class DiffReportGenerator {
                 overflow = HIDDEN
                 textOverflow = ELLIPSIS
             }
-            ".deleted-num-cell" {
-//                ref = ".line-cell" //не вышло, нет такого.
-                height = 25.px
-                minWidth = 30.px
-                width = 1.percent
-                color = rgba(27, 31, 35, 0.3)
-                backgroundColor = hex("#ffcdd2")
-                textAlign = RIGHT
-                paddingLeft = 10.px
-                paddingRight = 10.px
-                overflow = HIDDEN
-                textOverflow = ELLIPSIS
-            }
-            ".added-num-cell" {
-                height = 25.px
-                minWidth = 30.px
-                width = 1.percent
-                color = rgba(27, 31, 35, 0.3)
-                backgroundColor = hex("#dcedc8")
-                textAlign = RIGHT
-                paddingLeft = 10.px
-                paddingRight = 10.px
-                overflow = HIDDEN
-                textOverflow = ELLIPSIS
-            }
-            ".deleted-line-cell" {
-                backgroundColor = hex("#ffebee")
-            }
-            ".added-line-cell" {
+            ".added" {
                 backgroundColor = hex("#f1f8e9")
             }
-            ".diff-table-split .line-cell" {
+            ".added.line-cell" {
+                backgroundColor = hex("#dcedc8")
+            }
+            ".deleted" {
+                backgroundColor = hex("#ffebee")
+            }
+            ".deleted.line-cell" {
+                backgroundColor = hex("#ffcdd2")
+            }
+            ".diff-table-split.line-cell" {
                 width = 40.px
             }
             ".code-cell" {
