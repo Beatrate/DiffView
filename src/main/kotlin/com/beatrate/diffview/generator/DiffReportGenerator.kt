@@ -20,8 +20,12 @@ class DiffReportGenerator {
             ?: throw DiffReportGenerateException("Diff isn't related to original file")
         reportFile.writeText("")
 
-        reportFile.printWriter().use { writer ->
-            writer.appendHTML().html { originalFile.useLines { create(it, commit, diff, mode) } }
+        try {
+            reportFile.printWriter().use { writer ->
+                writer.appendHTML().html { originalFile.useLines { create(it, commit, diff, mode) } }
+            }
+        } catch (e: NoSuchElementException) {
+            throw DiffReportGenerateException("Unexpected end of original file")
         }
     }
 
@@ -127,7 +131,6 @@ class DiffReportGenerator {
         td("code-cell") { +line }
     }
 
-    
 
     private fun TBODY.splitView(lines: Sequence<String>, diff: Diff) {
         var counter = 0
@@ -190,13 +193,13 @@ class DiffReportGenerator {
             ".diff-table-split" {
                 tableLayout = FIXED
             }
-            ".line-cell .code-cell" {
+            ".line-cell, .code-cell" {
                 // Use only monospaced fonts in here.
+                fontFamily = "'Courier New',Courier,monospace"
                 fontSize = 14.px
                 lineHeight = 20.px
             }
             ".line-cell" {
-                height = 25.px
                 minWidth = 30.px
                 width = 1.percent
                 color = rgba(27, 31, 35, 0.3)
