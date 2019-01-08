@@ -11,6 +11,7 @@ import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
 import java.io.File
 import java.time.format.DateTimeFormatter
+import kotlin.math.max
 
 
 class DiffReportGenerator {
@@ -158,26 +159,28 @@ class DiffReportGenerator {
 
             for (i in 1..hunk.fromRange.length) if (lineIterator.hasNext()) lineIterator.next()
 
-            var addedLineIndex = 0
-            var repeating = false
-            while ((hunk.lines[addedLineIndex].kind != LineKind.ADDED) &&
-                   (hunk.lines.size - 1 > addedLineIndex)) ++addedLineIndex
             // Draw all hunk lines.
-            for (line in hunk.lines) {
-                val addedLine = hunk.lines[addedLineIndex]
-                renderSplitLines(line, addedLine, oldIndex, newIndex, repeating)
-                if (addedLineIndex == hunk.lines.size - 1) repeating = true
-                if ((line.kind == LineKind.REGULAR) || ((line.kind == LineKind.DELETED) && (addedLine.kind == LineKind.ADDED))) {
-                    if ((addedLine.kind != LineKind.ADDED) && (addedLineIndex != hunk.lines.size - 1))
-                        while ((hunk.lines[addedLineIndex].kind != LineKind.ADDED) &&
-                               (hunk.lines.size - 1 > addedLineIndex)) ++addedLineIndex
+            val deletedLines = mutableListOf<Line>()
+            val addedLines = mutableListOf<Line>()
+            for (line in hunk.lines) when (line.kind) {
+                LineKind.DELETED -> deletedLines.add(line)
+                LineKind.ADDED -> addedLines.add(line)
+                LineKind.REGULAR -> {
+                    val indices = checkChanges(deletedLines, addedLines, oldIndex, newIndex)
+                    oldIndex = indices.first
+                    newIndex = indices.second
+                    addedLines.clear()
+                    deletedLines.clear()
+                    renderSplitLines(line, line, oldIndex, newIndex)
                     ++oldIndex
                     ++newIndex
-                } else if ((line.kind == LineKind.DELETED) && (addedLine.kind != LineKind.ADDED)) ++oldIndex
-                else if ((line.kind != LineKind.DELETED) && (addedLine.kind == LineKind.ADDED))   ++newIndex
-                if ((hunk.lines[addedLineIndex].kind == LineKind.ADDED) &&
-                    (hunk.lines.size - 1 > addedLineIndex) && (line.kind != LineKind.REGULAR))    ++addedLineIndex
+                }
             }
+            val indices = checkChanges(deletedLines, addedLines, oldIndex, newIndex)
+            oldIndex = indices.first
+            newIndex = indices.second
+            addedLines.clear()
+            deletedLines.clear()
         }
         // Draw leftover regular.
         while (lineIterator.hasNext()) {
@@ -187,13 +190,44 @@ class DiffReportGenerator {
         }
     }
 
-    private fun TBODY.renderSplitLines(firstLine: Line, secondLine: Line, oldIndex: Int, newIndex: Int, repeating: Boolean) {
+    private fun TBODY.checkChanges(
+        deletedLines: List<Line>,
+        addedLines: List<Line>,
+        oldIndex: Int,
+        newIndex: Int
+    ): Pair<Int, Int> {
+        var currentOld = oldIndex
+        var currentNew = newIndex
+        if (!deletedLines.isEmpty() || !addedLines.isEmpty()) {
+            for (i in 0 until max(deletedLines.size, addedLines.size)) {
+                when {
+                    (addedLines.size > i) && (deletedLines.size > i) -> {
+                        renderSplitLines(deletedLines[i], addedLines[i], currentOld, currentNew)
+                        ++currentOld
+                        ++currentNew
+                    }
+                    addedLines.size <= i -> {
+                        renderSplitLines(deletedLines[i], deletedLines[i], currentOld, currentNew)
+                        ++currentOld
+                    }
+                    deletedLines.size <= i -> {
+                        renderSplitLines(addedLines[i], addedLines[i], currentOld, currentNew)
+                        ++currentNew
+                    }
+                }
+            }
+        }
+        return Pair(currentOld, currentNew)
+    }
+
+
+    private fun TBODY.renderSplitLines(firstLine: Line, secondLine: Line, oldIndex: Int, newIndex: Int) {
         if (firstLine.kind == LineKind.REGULAR) renderUnifiedLine(firstLine, oldIndex, newIndex, ReportMode.SPLIT)
         else tr {
             if (firstLine.kind == LineKind.DELETED) {
                 renderDeletedLine(firstLine.content, oldIndex, ReportMode.SPLIT)
             } else if (secondLine.kind == LineKind.ADDED) renderEmptyLine()
-            if ((secondLine.kind == LineKind.ADDED) && (!repeating)) {
+            if (secondLine.kind == LineKind.ADDED) {
                 renderAddedLine(secondLine.content, newIndex, ReportMode.SPLIT)
             } else if (firstLine.kind == LineKind.DELETED) renderEmptyLine()
         }
@@ -268,20 +302,19 @@ class DiffReportGenerator {
                 textOverflow = ELLIPSIS
             }
             ".added" {
-                backgroundColor = hex("#f1f8e9")
+                backgroundColor = hex("#e6ffed")
             }
             ".added.line-cell" {
-                backgroundColor = hex("#dcedc8")
+                backgroundColor = hex("#cdffd8")
             }
             ".deleted" {
-                backgroundColor = hex("#ffebee")
+                backgroundColor = hex("#ffeef0")
             }
             ".empty" {
                 backgroundColor = hex("#f5f5f5")
             }
-
             ".deleted.line-cell" {
-                backgroundColor = hex("#ffcdd2")
+                backgroundColor = hex("#ffdce0")
             }
             ".diff-table-split.line-cell" {
                 width = 40.px

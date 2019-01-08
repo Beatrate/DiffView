@@ -9,9 +9,9 @@ import java.io.File
 class DiffReportGeneratorTest {
     @Test
     fun test() {
-        val patch = File("src/test/resources/OneFileMultipleHunks.patch")
-        generate("src/test/resources/original/Big.txt", "target/unified.html", patch.absolutePath, ReportMode.UNIFIED)
-        generate("src/test/resources/original/Big.txt", "target/split.html", patch.absolutePath, ReportMode.SPLIT)
+        val patch = File("src/test/resources/OneFileMultipleHunksToShortStory.patch")
+        generate("src/test/resources/original/VeryShortWorldStory.txt", "target/unified.html", patch.absolutePath, ReportMode.UNIFIED)
+        generate("src/test/resources/original/VeryShortWorldStory.txt", "target/split.html", patch.absolutePath, ReportMode.SPLIT)
     }
 
     private fun parse(path: String) = DiffParser().parse(File(path))
