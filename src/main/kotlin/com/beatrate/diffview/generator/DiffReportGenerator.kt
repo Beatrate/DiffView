@@ -70,7 +70,7 @@ class DiffReportGenerator {
             val difference = newIndex - oldIndex
             // Draw regular until start.
             for (i in oldIndex until hunk.fromRange.offset) {
-                renderUnifiedLine(Line(LineKind.REGULAR, lineIterator.next()), i, (i + difference), ReportMode.UNIFIED)
+                renderLine(Line(LineKind.REGULAR, lineIterator.next()), i, (i + difference), ReportMode.UNIFIED)
             }
             oldIndex = hunk.fromRange.offset
             newIndex = hunk.toRange.offset
@@ -79,7 +79,7 @@ class DiffReportGenerator {
 
             // Draw all hunk lines.
             for (line in hunk.lines) {
-                renderUnifiedLine(line, oldIndex, newIndex, ReportMode.UNIFIED)
+                renderLine(line, oldIndex, newIndex, ReportMode.UNIFIED)
                 when (line.kind) {
                     LineKind.DELETED -> ++oldIndex
                     LineKind.ADDED -> ++newIndex
@@ -92,24 +92,18 @@ class DiffReportGenerator {
         }
         // Draw leftover regular.
         while (lineIterator.hasNext()) {
-            renderUnifiedLine(Line(LineKind.REGULAR, lineIterator.next()), oldIndex, newIndex, ReportMode.UNIFIED)
+            renderLine(Line(LineKind.REGULAR, lineIterator.next()), oldIndex, newIndex, ReportMode.UNIFIED)
             ++oldIndex
             ++newIndex
         }
     }
 
-    private fun TBODY.renderUnifiedLine(line: Line, oldIndex: Int, newIndex: Int, mode: ReportMode) {
+    private fun TBODY.renderLine(line: Line, oldIndex: Int, newIndex: Int, mode: ReportMode) {
         tr {
             when (line.kind) {
-                LineKind.DELETED -> {
-                    renderDeletedLine(line.content, oldIndex, mode)
-                }
-                LineKind.ADDED -> {
-                    renderAddedLine(line.content, newIndex, mode)
-                }
-                LineKind.REGULAR -> {
-                    renderRegularLine(line.content, oldIndex, newIndex, mode)
-                }
+                LineKind.DELETED -> renderDeletedLine(line.content, oldIndex, mode)
+                LineKind.ADDED -> renderAddedLine(line.content, newIndex, mode)
+                LineKind.REGULAR -> renderRegularLine(line.content, oldIndex, newIndex, mode)
             }
         }
     }
@@ -152,7 +146,7 @@ class DiffReportGenerator {
             val difference = newIndex - oldIndex
             // Draw regular until start hunk.
             for (i in oldIndex until hunk.fromRange.offset) {
-                renderUnifiedLine(Line(LineKind.REGULAR, lineIterator.next()), i, (i + difference), ReportMode.SPLIT)
+                renderLine(Line(LineKind.REGULAR, lineIterator.next()), i, (i + difference), ReportMode.SPLIT)
             }
             oldIndex = hunk.fromRange.offset
             newIndex = hunk.toRange.offset
@@ -184,7 +178,7 @@ class DiffReportGenerator {
         }
         // Draw leftover regular.
         while (lineIterator.hasNext()) {
-            renderUnifiedLine(Line(LineKind.REGULAR, lineIterator.next()), oldIndex, newIndex, ReportMode.SPLIT)
+            renderLine(Line(LineKind.REGULAR, lineIterator.next()), oldIndex, newIndex, ReportMode.SPLIT)
             ++oldIndex
             ++newIndex
         }
@@ -222,17 +216,18 @@ class DiffReportGenerator {
 
 
     private fun TBODY.renderSplitLines(firstLine: Line, secondLine: Line, oldIndex: Int, newIndex: Int) {
-        if (firstLine.kind == LineKind.REGULAR) renderUnifiedLine(firstLine, oldIndex, newIndex, ReportMode.SPLIT)
+        if (firstLine.kind == LineKind.REGULAR) renderLine(firstLine, oldIndex, newIndex, ReportMode.SPLIT)
         else tr {
-            if (firstLine.kind == LineKind.DELETED) {
-                renderDeletedLine(firstLine.content, oldIndex, ReportMode.SPLIT)
-            } else if (secondLine.kind == LineKind.ADDED) renderEmptyLine()
-            if (secondLine.kind == LineKind.ADDED) {
-                renderAddedLine(secondLine.content, newIndex, ReportMode.SPLIT)
-            } else if (firstLine.kind == LineKind.DELETED) renderEmptyLine()
+            when {
+                firstLine.kind == LineKind.DELETED -> renderDeletedLine(firstLine.content, oldIndex, ReportMode.SPLIT)
+                secondLine.kind == LineKind.ADDED -> renderEmptyLine()
+            }
+            when {
+                secondLine.kind == LineKind.ADDED -> renderAddedLine(secondLine.content, newIndex, ReportMode.SPLIT)
+                firstLine.kind == LineKind.DELETED -> renderEmptyLine()
+            }
         }
     }
-
 
     private fun generateStyle(): String {
         return Stylesheet {
