@@ -1,0 +1,14 @@
+From 7684a9ada6a46b27aeb890c361dc0def2082137d Mon Sep 17 00:00:00 2001
+From: Yegor Lindberg <yegor.lindberg@gmail.com>
+Date: Fri, 11 Jan 2019 23:22:20 +0300
+Subject: [PATCH] Rename toRename.txt to wasRenaming.txt
+
+---
+ toRename.txt => wasRenaming.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename toRename.txt => wasRenaming.txt (100%)
+
+diff --git a/toRename.txt b/wasRenaming.txt
+similarity index 100%
+rename from toRename.txt
+rename to wasRenaming.txt

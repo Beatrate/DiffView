@@ -27,6 +27,24 @@ class DiffReportGeneratorTest {
         )
     }
 
+
+    @Test
+    fun renamingTest() {
+        val patch = File("src/test/resources/RenameFile.patch")
+        generate(
+            "src/test/resources/original/toRename.txt",
+            "target/renamedUnified.html",
+            patch.absolutePath,
+            ReportMode.UNIFIED
+        )
+        generate(
+            "src/test/resources/original/toRename.txt",
+            "target/renamedSplit.html",
+            patch.absolutePath,
+            ReportMode.SPLIT
+        )
+    }
+
     @Test
     fun onlyAddedSplit() {
         val original = File("src/test/resources/original/FirstTest.txt")
@@ -104,6 +122,69 @@ class DiffReportGeneratorTest {
         assertLines(expected, original, patch, ReportMode.SPLIT)
     }
 
+    @Test
+    fun onlyAddedUnified() {
+        val original = File("src/test/resources/original/FirstTest.txt")
+        val patch = File("src/test/resources/3LinesAdded.patch")
+        val expected = listOf(
+            listOf(""),
+            listOf("Finite incantantem"),
+            listOf("Avada Cedavra"),
+            listOf("Alahamora")
+        )
+        assertLines(expected, original, patch, ReportMode.UNIFIED)
+    }
+
+    @Test
+    fun onlyDeletedUnified() {
+        val original = File("src/test/resources/original/ThirdTest.txt")
+        val patch = File("src/test/resources/3LinesDeleted.patch")
+        val expected = listOf(
+            listOf(""),
+            listOf("del"),
+            listOf("del"),
+            listOf("del")
+        )
+        assertLines(expected, original, patch, ReportMode.UNIFIED)
+    }
+
+    @Test
+    fun deletedTwoAndAddedOneUnified() {
+        val original = File("src/test/resources/original/SecondTest.txt")
+        val patch = File("src/test/resources/2Deleted_1Added.patch")
+        val expected = listOf(
+            listOf("del"),
+            listOf("del"),
+            listOf("add")
+        )
+        assertLines(expected, original, patch, ReportMode.UNIFIED)
+    }
+
+    @Test
+    fun deletedTwoAndAddedTwoUnified() {
+        val original = File("src/test/resources/original/FourthTest.txt")
+        val patch = File("src/test/resources/2Deleted_2Added.patch")
+        val expected = listOf(
+            listOf("del"),
+            listOf("del"),
+            listOf("add"),
+            listOf("add")
+        )
+        assertLines(expected, original, patch, ReportMode.UNIFIED)
+    }
+
+    @Test
+    fun deletedOneAndAddedTwoUnified() {
+        val original = File("src/test/resources/original/FifthTest.txt")
+        val patch = File("src/test/resources/1Deleted_2Added.patch")
+        val expected = listOf(
+            listOf("del"),
+            listOf("add"),
+            listOf("add")
+        )
+        assertLines(expected, original, patch, ReportMode.UNIFIED)
+    }
+
 
     @Test
     fun deletedAddedAndStaticUnified() {
@@ -121,6 +202,15 @@ class DiffReportGeneratorTest {
             listOf("static")
         )
         assertLines(expected, original, patch, ReportMode.UNIFIED)
+    }
+
+
+    @Test
+    fun renameFile() {
+        val original = File("src/test/resources/original/toRename.txt")
+        val patch = File("src/test/resources/RenameFile.patch")
+        assertEquals(false, assertFileName(original, patch, ReportMode.UNIFIED), "names are equal.")
+        assertEquals(false, assertFileName(original, patch, ReportMode.SPLIT), "names are equal.")
     }
 
 
@@ -156,5 +246,18 @@ class DiffReportGeneratorTest {
                 assertLines(expected, lines)
             }
         }
+    }
+
+
+    private fun assertFileName(originalFile: File, patchFile: File, mode: ReportMode): Boolean {
+        var equalNames = false
+        createFile { report ->
+            generate(originalFile, report, patchFile, mode)
+            Jsoup.parse(report, Charsets.UTF_8.name(), "").run {
+                val name = select("title").first()
+                if (name.className() == originalFile.name) equalNames = true
+            }
+        }
+        return equalNames
     }
 }
