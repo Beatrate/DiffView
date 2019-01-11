@@ -1,15 +1,14 @@
 package com.beatrate.diffview
 
-import com.beatrate.diffview.common.Commit
-import com.beatrate.diffview.generator.DiffReportGenerator
+import com.beatrate.diffview.generator.GitDiffReportGenerator
 import com.beatrate.diffview.generator.ReportMode
-import com.beatrate.diffview.parser.DiffParser
+import com.beatrate.diffview.parser.GitDiffParser
 import org.jsoup.Jsoup
 import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals
 
-class DiffReportGeneratorTest {
+class GitDiffReportGeneratorTest {
     @Test
     fun test() {
         val patch = File("src/test/resources/OneFileMultipleHunksToShortStory.patch")
@@ -124,15 +123,15 @@ class DiffReportGeneratorTest {
     }
 
 
-    private fun parse(path: String) = DiffParser().parse(File(path))
+    private fun parse(path: String) = GitDiffParser().parse(File(path))
 
-    private fun parse(file: File) = DiffParser().parse(file)
+    private fun parse(file: File) = GitDiffParser().parse(file)
 
     private fun generate(originalPath: String, reportPath: String, patchPath: String, mode: ReportMode) =
-        DiffReportGenerator().generate(File(originalPath), File(reportPath), parse(patchPath), mode)
+        GitDiffReportGenerator().generate(File(originalPath), File(reportPath), parse(patchPath), mode)
 
     private fun generate(originalFile: File, reportFile: File, patchFile: File, mode: ReportMode) =
-        DiffReportGenerator().generate(originalFile, reportFile, parse(patchFile), mode)
+        GitDiffReportGenerator().generate(originalFile, reportFile, parse(patchFile), mode)
 
     private fun createFile(action: (File) -> Unit) {
         val file = File.createTempFile("temp", "html")

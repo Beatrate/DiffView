@@ -1,14 +1,14 @@
 package com.beatrate.diffview
 
 import com.beatrate.diffview.common.*
-import com.beatrate.diffview.parser.DiffParser
+import com.beatrate.diffview.parser.GitDiffParser
 import org.junit.Test
 import java.io.File
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import kotlin.test.assertEquals
 
-class DiffParserTest {
+class GitDiffParserTest {
     @Test
     fun header() {
         val commit = parse("src/test/resources/OneFileOneHunk.patch")
@@ -130,7 +130,7 @@ class DiffParserTest {
         assertEquals(1, diff.hunks.size)
     }
 
-    private fun parse(path: String): Commit = DiffParser().parse(File(path))
+    private fun parse(path: String): Commit = GitDiffParser().parse(File(path))
 
     private fun parseDiff(path: String): Diff {
         val commit = parse(path)
