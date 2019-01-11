@@ -1,0 +1,18 @@
+From 67a1d9ab951e55efbb27e016b08efb82ded75483 Mon Sep 17 00:00:00 2001
+From: Yegor Lindberg <yegor.lindberg@gmail.com>
+Date: Fri, 11 Jan 2019 20:32:14 +0300
+Subject: [PATCH] Update ThirdTest.txt
+
+---
+ ThirdTest.txt | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/ThirdTest.txt b/ThirdTest.txt
+index e5291b5..8b13789 100644
+--- a/ThirdTest.txt
++++ b/ThirdTest.txt
+@@ -1,4 +1 @@
+ 
+-del
+-del
+-del

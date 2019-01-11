@@ -1,0 +1,18 @@
+From 07f057bcfd5b0d306a9c3265f454b857b78dddfd Mon Sep 17 00:00:00 2001
+From: Yegor Lindberg <yegor.lindberg@gmail.com>
+Date: Fri, 11 Jan 2019 19:35:24 +0300
+Subject: [PATCH] Update FirstTest.txt
+
+---
+ FirstTest.txt | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/FirstTest.txt b/FirstTest.txt
+index 8b13789..46aca07 100644
+--- a/FirstTest.txt
++++ b/FirstTest.txt
+@@ -1 +1,4 @@
+ 
++Finite incantantem
++Avada Cedavra
++Alahamora

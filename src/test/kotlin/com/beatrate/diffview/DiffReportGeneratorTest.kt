@@ -28,19 +28,101 @@ class DiffReportGeneratorTest {
     }
 
     @Test
-    fun testSplit() {
-        val original = File("src/test/resources/original/VeryShortWorldStory.txt")
-        val patch = File("src/test/resources/OneFileMultipleHunksToShortStory.patch")
+    fun onlyAddedSplit() {
+        val original = File("src/test/resources/original/FirstTest.txt")
+        val patch = File("src/test/resources/3LinesAdded.patch")
         val expected = listOf(
-            listOf(" Failed SAT. Lost scholarship. Invented rocket.", " Failed SAT. Lost scholarship. Invented rocket."),
-            listOf(" - William Shatner", " - William Shatner"),
-            listOf(" ", " "),
-            listOf("", "+Epitaph: He shouldn't have fed it."),
-            listOf("", "+- Brian Herbert")
+            listOf("", ""),
+            listOf("", "Finite incantantem"),
+            listOf("", "Avada Cedavra"),
+            listOf("", "Alahamora")
         )
-
         assertLines(expected, original, patch, ReportMode.SPLIT)
     }
+
+    @Test
+    fun onlyDeletedSplit() {
+        val original = File("src/test/resources/original/ThirdTest.txt")
+        val patch = File("src/test/resources/3LinesDeleted.patch")
+        val expected = listOf(
+            listOf("", ""),
+            listOf("del", ""),
+            listOf("del", ""),
+            listOf("del", "")
+        )
+        assertLines(expected, original, patch, ReportMode.SPLIT)
+    }
+
+    @Test
+    fun deletedTwoAndAddedOneSplit() {
+        val original = File("src/test/resources/original/SecondTest.txt")
+        val patch = File("src/test/resources/2Deleted_1Added.patch")
+        val expected = listOf(
+            listOf("del", "add"),
+            listOf("del", "")
+        )
+        assertLines(expected, original, patch, ReportMode.SPLIT)
+    }
+
+    @Test
+    fun deletedTwoAndAddedTwoSplit() {
+        val original = File("src/test/resources/original/FourthTest.txt")
+        val patch = File("src/test/resources/2Deleted_2Added.patch")
+        val expected = listOf(
+            listOf("del", "add"),
+            listOf("del", "add")
+        )
+        assertLines(expected, original, patch, ReportMode.SPLIT)
+    }
+
+    @Test
+    fun deletedOneAndAddedTwoSplit() {
+        val original = File("src/test/resources/original/FifthTest.txt")
+        val patch = File("src/test/resources/1Deleted_2Added.patch")
+        val expected = listOf(
+            listOf("del", "add"),
+            listOf("", "add")
+        )
+        assertLines(expected, original, patch, ReportMode.SPLIT)
+    }
+
+    @Test
+    fun deletedAddedAndStaticSplit() {
+        val original = File("src/test/resources/original/SixthTest.txt")
+        val patch = File("src/test/resources/DeletedAddedAndStatic.patch")
+        val expected = listOf(
+            listOf("", ""),
+            listOf("del", ""),
+            listOf("", ""),
+            listOf("static", "static"),
+            listOf("", "add"),
+            listOf("static", "static"),
+            listOf("static", "static"),
+            listOf("static", "static"),
+            listOf("static", "static")
+        )
+        assertLines(expected, original, patch, ReportMode.SPLIT)
+    }
+
+
+    @Test
+    fun deletedAddedAndStaticUnified() {
+        val original = File("src/test/resources/original/SixthTest.txt")
+        val patch = File("src/test/resources/DeletedAddedAndStatic.patch")
+        val expected = listOf(
+            listOf(""),
+            listOf("del"),
+            listOf(""),
+            listOf("static"),
+            listOf("add"),
+            listOf("static"),
+            listOf("static"),
+            listOf("static"),
+            listOf("static")
+        )
+        assertLines(expected, original, patch, ReportMode.UNIFIED)
+    }
+
 
     private fun parse(path: String) = DiffParser().parse(File(path))
 
@@ -67,7 +149,7 @@ class DiffReportGeneratorTest {
 
     private fun assertLines(expected: List<List<String>>, originalFile: File, patchFile: File, mode: ReportMode) {
         createFile { report ->
-            generate(originalFile, report, patchFile, ReportMode.SPLIT)
+            generate(originalFile, report, patchFile, mode)
             Jsoup.parse(report, Charsets.UTF_8.name(), "").run {
                 val lines = select("table.diff-table").first()
                     .select("tr").map { it.select("td.code-cell").map { cell -> cell.wholeText() } }

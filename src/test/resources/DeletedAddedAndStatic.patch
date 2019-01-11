@@ -1,0 +1,22 @@
+From cae9c6d470c36bccd14c6deca6e6287fb710cd23 Mon Sep 17 00:00:00 2001
+From: Yegor Lindberg <yegor.lindberg@gmail.com>
+Date: Fri, 11 Jan 2019 20:48:14 +0300
+Subject: [PATCH] Update SixthTest.txt
+
+---
+ SixthTest.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/SixthTest.txt b/SixthTest.txt
+index 422efc1..e7ed0b5 100644
+--- a/SixthTest.txt
++++ b/SixthTest.txt
+@@ -1,7 +1,7 @@
+ 
+-del
+ 
+ static
++add
+ static
+ static
+ static

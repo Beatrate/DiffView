@@ -1,0 +1,17 @@
+From f908abcc2044b51a3c52ae664d14c532a42f59a0 Mon Sep 17 00:00:00 2001
+From: Yegor Lindberg <yegor.lindberg@gmail.com>
+Date: Fri, 11 Jan 2019 19:52:56 +0300
+Subject: [PATCH] Update SecondTest.txt
+
+---
+ SecondTest.txt | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/SecondTest.txt b/SecondTest.txt
+index 52b089a..76d4bb8 100644
+--- a/SecondTest.txt
++++ b/SecondTest.txt
+@@ -1,2 +1 @@
+-del
+-del
++add

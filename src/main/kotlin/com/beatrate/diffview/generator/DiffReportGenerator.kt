@@ -3,10 +3,7 @@ package com.beatrate.diffview.generator
 import azadev.kotlin.css.*
 import azadev.kotlin.css.colors.*
 import azadev.kotlin.css.dimens.*
-import com.beatrate.diffview.common.Commit
-import com.beatrate.diffview.common.Diff
-import com.beatrate.diffview.common.Line
-import com.beatrate.diffview.common.LineKind
+import com.beatrate.diffview.common.*
 import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
 import java.io.File
@@ -46,17 +43,27 @@ class DiffReportGenerator {
                 }
                 div("diff-view") {
                     div("file-header") {
-                        p { +diff.oldFile }
+                        p {
+                            if (diff.kind == DiffKind.RENAME) +"${diff.oldFile} → ${diff.newFile}"
+                            else +diff.oldFile
+                        }
                     }
                     table("diff-table") {
                         tbody {
-                            if (mode == ReportMode.UNIFIED) unifiedView(originalLines, diff)
-                            else splitView(originalLines, diff)
+                            when {
+                                diff.kind == DiffKind.DELETE -> deletedView()
+                                mode == ReportMode.UNIFIED -> unifiedView(originalLines, diff)
+                                else -> splitView(originalLines, diff)
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun TBODY.deletedView() = tr {
+        td("code-cell") { +"The file was deleted."}
     }
 
     private fun TBODY.unifiedView(lines: Sequence<String>, diff: Diff) {

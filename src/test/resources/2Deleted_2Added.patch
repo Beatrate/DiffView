@@ -1,0 +1,18 @@
+From d78995c9b364c17836863be94d0bc21918a7def8 Mon Sep 17 00:00:00 2001
+From: Yegor Lindberg <yegor.lindberg@gmail.com>
+Date: Fri, 11 Jan 2019 20:19:13 +0300
+Subject: [PATCH] Update FourthTest.txt
+
+---
+ FourthTest.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/FourthTest.txt b/FourthTest.txt
+index 52b089a..7c7bfe2 100644
+--- a/FourthTest.txt
++++ b/FourthTest.txt
+@@ -1,2 +1,2 @@
+-del
+-del
++add
++add
