@@ -102,16 +102,19 @@ class DiffReportGenerator {
             LineKind.REGULAR -> {
                 td("line-cell") { +oldIndex.toString() }
                 td("line-cell") { +newIndex.toString() }
+                td("change-cell")
                 td("code-cell") { +line.content }
             }
             LineKind.ADDED -> {
                 td("line-cell added")
                 td("line-cell added") { +newIndex.toString() }
+                td("change-cell added") { +"+" }
                 td("code-cell added") { +line.content }
             }
             LineKind.DELETED -> {
                 td("line-cell deleted") { +oldIndex.toString() }
                 td("line-cell deleted")
+                td("change-cell deleted") { +"-" }
                 td("code-cell deleted") { +line.content }
             }
         }
@@ -198,17 +201,21 @@ class DiffReportGenerator {
     private fun TBODY.renderSplitLine(oldLine: Line, newLine: Line, oldIndex: Int, newIndex: Int) = tr {
         if (oldLine.kind == LineKind.REGULAR && newLine.kind == LineKind.REGULAR) {
             td("line-cell") { +oldIndex.toString() }
+            td("change-cell")
             td("code-cell") { +oldLine.content }
             td("line-cell") { +newIndex.toString() }
+            td("change-cell")
             td("code-cell") { +newLine.content }
         } else {
             when (oldLine.kind) {
                 LineKind.DELETED -> {
                     td("line-cell deleted") { +oldIndex.toString() }
+                    td("change-cell deleted") { +"-" }
                     td("code-cell deleted") { +oldLine.content }
                 }
                 else -> {
                     td("line-cell empty")
+                    td("change-cell empty")
                     td("code-cell empty")
                 }
             }
@@ -216,10 +223,12 @@ class DiffReportGenerator {
             when (newLine.kind) {
                 LineKind.ADDED -> {
                     td("line-cell added") { +newIndex.toString() }
+                    td("change-cell added") { +"+" }
                     td("code-cell added") { +newLine.content }
                 }
                 else -> {
                     td("line-cell empty")
+                    td("change-cell empty")
                     td("code-cell empty")
                 }
             }
@@ -277,7 +286,7 @@ class DiffReportGenerator {
             ".diff-table-split" {
                 tableLayout = FIXED
             }
-            ".line-cell, .code-cell" {
+            ".line-cell, .code-cell, .change-cell" {
                 // Use only monospaced fonts in here.
                 fontFamily = "'Courier New',Courier,monospace"
                 fontSize = 14.px
@@ -314,6 +323,10 @@ class DiffReportGenerator {
             ".code-cell" {
                 whiteSpace = PRE_WRAP
                 wordWrap = BREAK
+            }
+            ".change-cell" {
+                width = 20.px
+                textAlign = CENTER
             }
         }.render()
     }

@@ -147,9 +147,9 @@ class DiffParserTest {
     private fun linesOf(vararg lines: String): List<Line> =
             lines.map {
                 when (it.firstOrNull()) {
-                    '-' -> Line(LineKind.DELETED, it)
-                    '+' -> Line(LineKind.ADDED, it)
-                    ' ' -> Line(LineKind.REGULAR, it)
+                    '-' -> Line(LineKind.DELETED, it.drop(1))
+                    '+' -> Line(LineKind.ADDED, it.drop(1))
+                    ' ' -> Line(LineKind.REGULAR, it.drop(1))
                     else -> throw IllegalArgumentException("Hunk line missing a marker")
                 }
             }

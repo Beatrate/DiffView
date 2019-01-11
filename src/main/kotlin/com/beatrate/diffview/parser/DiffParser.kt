@@ -113,16 +113,16 @@ class DiffParser {
 
         val lines = mutableListOf<Line>()
         while (reader.isNotEmpty) {
-            val line = reader.peek()
-            val kind = when {
-                line.startsWith(Prefix.DELETED_LINE) -> LineKind.DELETED
-                line.startsWith(Prefix.ADDED_LINE) -> LineKind.ADDED
-                line.startsWith(Prefix.REGULAR_LINE) -> LineKind.REGULAR
-                line == Prefix.NO_NEWLINE -> LineKind.REGULAR
+            val content = reader.peek()
+            val line = when {
+                content.startsWith(Prefix.DELETED_LINE) -> Line(LineKind.DELETED, content.drop(Prefix.DELETED_LINE.length))
+                content.startsWith(Prefix.ADDED_LINE) -> Line(LineKind.ADDED, content.drop(Prefix.ADDED_LINE.length))
+                content.startsWith(Prefix.REGULAR_LINE) -> Line(LineKind.REGULAR, content.drop(Prefix.REGULAR_LINE.length))
+                content == Prefix.NO_NEWLINE -> Line(LineKind.REGULAR, content)
                 else -> null
             } ?: break
 
-            lines.add(Line(kind, line))
+            lines.add(line)
             reader.next()
         }
         return Hunk(unparsedRange, LineRange(oldOffset, oldLength), LineRange(newOffset, newLength), lines)
