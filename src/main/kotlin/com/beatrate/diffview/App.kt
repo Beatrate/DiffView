@@ -2,8 +2,10 @@ package com.beatrate.diffview
 
 import com.beatrate.diffview.generator.DiffReportGenerateException
 import com.beatrate.diffview.generator.DiffReportGenerator
+import com.beatrate.diffview.generator.GitDiffReportGenerator
 import com.beatrate.diffview.parser.DiffParseException
 import com.beatrate.diffview.parser.DiffParser
+import com.beatrate.diffview.parser.GitDiffParser
 import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.SystemExitException
 import com.xenomachina.argparser.mainBody
@@ -25,8 +27,8 @@ class App {
             val reportFile = File(reportPath)
 
             try {
-                val parser = DiffParser()
-                val generator = DiffReportGenerator()
+                val parser: DiffParser = GitDiffParser()
+                val generator: DiffReportGenerator = GitDiffReportGenerator()
                 generator.generate(originalFile, reportFile, parser.parse(patchFile), reportMode)
             } catch (e: DiffParseException) {
                 throw SystemExitException("Patch parsing failed: ${e.message}", 1)
