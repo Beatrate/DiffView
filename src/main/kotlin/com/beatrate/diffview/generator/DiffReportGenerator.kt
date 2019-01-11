@@ -50,11 +50,8 @@ class DiffReportGenerator {
                     }
                     table("diff-table") {
                         tbody {
-                            if (mode == ReportMode.UNIFIED) unified(originalLines, diff)
-                            else {
-                                classes += "diff-table-split"
-                                splitView(originalLines, diff)
-                            }
+                            if (mode == ReportMode.UNIFIED) unifiedView(originalLines, diff)
+                            else splitView(originalLines, diff)
                         }
                     }
                 }
@@ -62,7 +59,7 @@ class DiffReportGenerator {
         }
     }
 
-    private fun TBODY.unified(lines: Sequence<String>, diff: Diff) {
+    private fun TBODY.unifiedView(lines: Sequence<String>, diff: Diff) {
         val lineIterator = lines.iterator()
         var oldIndex = 1
         var newIndex = 1
@@ -70,7 +67,8 @@ class DiffReportGenerator {
             val difference = newIndex - oldIndex
             // Draw regular until start.
             for (i in oldIndex until hunk.fromRange.offset) {
-                renderLine(Line(LineKind.REGULAR, lineIterator.next()), i, (i + difference), ReportMode.UNIFIED)
+                val line = Line(LineKind.REGULAR, lineIterator.next())
+                renderUnifiedLine(line, i, i + difference)
             }
             oldIndex = hunk.fromRange.offset
             newIndex = hunk.toRange.offset
@@ -79,7 +77,7 @@ class DiffReportGenerator {
 
             // Draw all hunk lines.
             for (line in hunk.lines) {
-                renderLine(line, oldIndex, newIndex, ReportMode.UNIFIED)
+                renderUnifiedLine(line, oldIndex, newIndex)
                 when (line.kind) {
                     LineKind.DELETED -> ++oldIndex
                     LineKind.ADDED -> ++newIndex
@@ -92,53 +90,36 @@ class DiffReportGenerator {
         }
         // Draw leftover regular.
         while (lineIterator.hasNext()) {
-            renderLine(Line(LineKind.REGULAR, lineIterator.next()), oldIndex, newIndex, ReportMode.UNIFIED)
+            val line = Line(LineKind.REGULAR, lineIterator.next())
+            renderUnifiedLine(line, oldIndex, newIndex)
             ++oldIndex
             ++newIndex
         }
     }
 
-    private fun TBODY.renderLine(line: Line, oldIndex: Int, newIndex: Int, mode: ReportMode) {
-        tr {
-            when (line.kind) {
-                LineKind.DELETED -> renderDeletedLine(line.content, oldIndex, mode)
-                LineKind.ADDED -> renderAddedLine(line.content, newIndex, mode)
-                LineKind.REGULAR -> renderRegularLine(line.content, oldIndex, newIndex, mode)
+    private fun TBODY.renderUnifiedLine(line: Line, oldIndex: Int, newIndex: Int) = tr {
+        when (line.kind) {
+            LineKind.REGULAR -> {
+                td("line-cell") { +oldIndex.toString() }
+                td("line-cell") { +newIndex.toString() }
+                td("code-cell") { +line.content }
+            }
+            LineKind.ADDED -> {
+                td("line-cell added")
+                td("line-cell added") { +newIndex.toString() }
+                td("code-cell added") { +line.content }
+            }
+            LineKind.DELETED -> {
+                td("line-cell deleted") { +oldIndex.toString() }
+                td("line-cell deleted")
+                td("code-cell deleted") { +line.content }
             }
         }
     }
 
-    private fun TR.renderDeletedLine(line: String, counter: Int, mode: ReportMode) {
-        td("line-cell deleted") { +counter.toString() }
-        if (mode == ReportMode.UNIFIED) {
-            td("line-cell deleted")
-        }
-        td("code-cell deleted") { +line }
-    }
-
-    private fun TR.renderAddedLine(line: String, counter: Int, mode: ReportMode) {
-        if (mode == ReportMode.UNIFIED) {
-            td("line-cell added")
-        }
-        td("line-cell added") { +counter.toString() }
-        td("code-cell added") { +line }
-    }
-
-    private fun TR.renderRegularLine(line: String, origCounter: Int, newCounter: Int, mode: ReportMode) {
-        td("line-cell") { +origCounter.toString() }
-        if (mode == ReportMode.SPLIT) {
-            td("code-cell") { +line }
-        }
-        td("line-cell") { +newCounter.toString() }
-        td("code-cell") { +line }
-    }
-
-    private fun TR.renderEmptyLine() {
-        td("line-cell empty")
-        td("code-cell empty")
-    }
-
     private fun TBODY.splitView(lines: Sequence<String>, diff: Diff) {
+        classes += "diff-table-split"
+
         val lineIterator = lines.iterator()
         var oldIndex = 1
         var newIndex = 1
@@ -146,7 +127,8 @@ class DiffReportGenerator {
             val difference = newIndex - oldIndex
             // Draw regular until start hunk.
             for (i in oldIndex until hunk.fromRange.offset) {
-                renderLine(Line(LineKind.REGULAR, lineIterator.next()), i, (i + difference), ReportMode.SPLIT)
+                val line = Line(LineKind.REGULAR, lineIterator.next())
+                renderSplitLine(line, line, i, i + difference)
             }
             oldIndex = hunk.fromRange.offset
             newIndex = hunk.toRange.offset
@@ -165,7 +147,7 @@ class DiffReportGenerator {
                     newIndex = indices.second
                     addedLines.clear()
                     deletedLines.clear()
-                    renderSplitLines(line, line, oldIndex, newIndex)
+                    renderSplitLine(line, line, oldIndex, newIndex)
                     ++oldIndex
                     ++newIndex
                 }
@@ -178,7 +160,8 @@ class DiffReportGenerator {
         }
         // Draw leftover regular.
         while (lineIterator.hasNext()) {
-            renderLine(Line(LineKind.REGULAR, lineIterator.next()), oldIndex, newIndex, ReportMode.SPLIT)
+            val line = Line(LineKind.REGULAR, lineIterator.next())
+            renderSplitLine(line, line, oldIndex, newIndex)
             ++oldIndex
             ++newIndex
         }
@@ -192,39 +175,53 @@ class DiffReportGenerator {
     ): Pair<Int, Int> {
         var currentOld = oldIndex
         var currentNew = newIndex
-        if (!deletedLines.isEmpty() || !addedLines.isEmpty()) {
-            for (i in 0 until max(deletedLines.size, addedLines.size)) {
-                when {
-                    (addedLines.size > i) && (deletedLines.size > i) -> {
-                        renderSplitLines(deletedLines[i], addedLines[i], currentOld, currentNew)
-                        ++currentOld
-                        ++currentNew
-                    }
-                    addedLines.size <= i -> {
-                        renderSplitLines(deletedLines[i], deletedLines[i], currentOld, currentNew)
-                        ++currentOld
-                    }
-                    deletedLines.size <= i -> {
-                        renderSplitLines(addedLines[i], addedLines[i], currentOld, currentNew)
-                        ++currentNew
-                    }
+        for (i in 0 until max(deletedLines.size, addedLines.size)) {
+            when {
+                (addedLines.size > i) && (deletedLines.size > i) -> {
+                    renderSplitLine(deletedLines[i], addedLines[i], currentOld, currentNew)
+                    ++currentOld
+                    ++currentNew
+                }
+                addedLines.size <= i -> {
+                    renderSplitLine(deletedLines[i], Line(LineKind.REGULAR, ""), currentOld, currentNew)
+                    ++currentOld
+                }
+                deletedLines.size <= i -> {
+                    renderSplitLine(Line(LineKind.REGULAR, ""), addedLines[i], currentOld, currentNew)
+                    ++currentNew
                 }
             }
         }
         return Pair(currentOld, currentNew)
     }
 
-
-    private fun TBODY.renderSplitLines(firstLine: Line, secondLine: Line, oldIndex: Int, newIndex: Int) {
-        if (firstLine.kind == LineKind.REGULAR) renderLine(firstLine, oldIndex, newIndex, ReportMode.SPLIT)
-        else tr {
-            when {
-                firstLine.kind == LineKind.DELETED -> renderDeletedLine(firstLine.content, oldIndex, ReportMode.SPLIT)
-                secondLine.kind == LineKind.ADDED -> renderEmptyLine()
+    private fun TBODY.renderSplitLine(oldLine: Line, newLine: Line, oldIndex: Int, newIndex: Int) = tr {
+        if (oldLine.kind == LineKind.REGULAR && newLine.kind == LineKind.REGULAR) {
+            td("line-cell") { +oldIndex.toString() }
+            td("code-cell") { +oldLine.content }
+            td("line-cell") { +newIndex.toString() }
+            td("code-cell") { +newLine.content }
+        } else {
+            when (oldLine.kind) {
+                LineKind.DELETED -> {
+                    td("line-cell deleted") { +oldIndex.toString() }
+                    td("code-cell deleted") { +oldLine.content }
+                }
+                else -> {
+                    td("line-cell empty")
+                    td("code-cell empty")
+                }
             }
-            when {
-                secondLine.kind == LineKind.ADDED -> renderAddedLine(secondLine.content, newIndex, ReportMode.SPLIT)
-                firstLine.kind == LineKind.DELETED -> renderEmptyLine()
+
+            when (newLine.kind) {
+                LineKind.ADDED -> {
+                    td("line-cell added") { +newIndex.toString() }
+                    td("code-cell added") { +newLine.content }
+                }
+                else -> {
+                    td("line-cell empty")
+                    td("code-cell empty")
+                }
             }
         }
     }
