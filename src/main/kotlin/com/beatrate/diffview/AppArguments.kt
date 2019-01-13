@@ -5,8 +5,8 @@ import com.xenomachina.argparser.ArgParser
 import com.xenomachina.argparser.SystemExitException
 
 class AppArguments(parser: ArgParser) {
-    val originalPath by parser.storing("--file",
-            help = "original file path")
+    val originalPaths by parser.adding("--file",
+        help = "original file paths")
     val patchPath by parser.storing("--patch",
             help = "diff path")
     val reportPath by parser.storing("--out",

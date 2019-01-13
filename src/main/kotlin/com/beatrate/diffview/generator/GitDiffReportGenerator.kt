@@ -7,26 +7,25 @@ import com.beatrate.diffview.common.*
 import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
 import java.io.File
+import java.nio.file.Paths
 import java.time.format.DateTimeFormatter
 import kotlin.math.max
 
 class GitDiffReportGenerator : DiffReportGenerator {
-    override fun generate(originalFile: File, reportFile: File, commit: Commit, mode: ReportMode) {
-        // If there are multiple changes in different files, pick diff related to the original file.
-        val diff = commit.diffs.find { it.oldFile == originalFile.name }
-            ?: throw DiffReportGenerateException("Diff isn't related to original file")
+    override fun generate(originalFiles: List<File>, reportFile: File, commit: Commit, mode: ReportMode) {
         reportFile.writeText("")
-
         try {
             reportFile.printWriter().use { writer ->
-                writer.appendHTML().html { originalFile.useLines { create(it, commit, diff, mode) } }
+                writer.appendHTML().html {
+                    create(originalFiles, commit, mode)
+                }
             }
         } catch (e: NoSuchElementException) {
             throw DiffReportGenerateException("Unexpected end of original file")
         }
     }
 
-    private fun HTML.create(originalLines: Sequence<String>, commit: Commit, diff: Diff, mode: ReportMode) {
+    private fun HTML.create(originaFiles: List<File>, commit: Commit, mode: ReportMode) {
         head {
             meta { charset = "UTF-8" }
             title { +commit.message }
@@ -40,26 +39,41 @@ class GitDiffReportGenerator : DiffReportGenerator {
                         p { +"${commit.author} commited on ${commit.date.format(DateTimeFormatter.ofPattern("MMM d, yyyy"))}" }
                     }
                 }
-                div("diff-view") {
-                    div("file-header") {
-                        p {
-                            if (diff.kind == DiffKind.RENAME) +"${diff.oldFile} → ${diff.newFile}"
-                            else +diff.oldFile
-                        }
-                    }
-                    table("diff-table") {
-                        tbody {
-                            when {
-                                diff.kind == DiffKind.DELETE -> deletedView()
-                                mode == ReportMode.UNIFIED -> unifiedView(originalLines, diff)
-                                else -> splitView(originalLines, diff)
-                            }
-                        }
+                diffs(originaFiles, mode, commit)
+            }
+        }
+    }
+
+    private fun DIV.diffs(originalFiles: List<File>, mode: ReportMode, commit: Commit) {
+        for (file in originalFiles) {
+            val diff = commit.diffs.find { file.name == Paths.get(it.oldFile).fileName.toString() }
+                ?: throw DiffReportGenerateException("FILE is not present in diffs.")
+            file.useLines {
+                renderDiff(it, diff, mode)
+            }
+        }
+    }
+
+    private fun DIV.renderDiff(originalLines: Sequence<String>, diff: Diff, mode: ReportMode) {
+        div("diff-view") {
+            div("file-header") {
+                p {
+                    if (diff.kind == DiffKind.RENAME) +"${diff.oldFile} → ${diff.newFile}"
+                    else +diff.oldFile
+                }
+            }
+            table("diff-table") {
+                tbody {
+                    when {
+                        diff.kind == DiffKind.DELETE -> deletedView()
+                        mode == ReportMode.UNIFIED -> unifiedView(originalLines, diff)
+                        else -> splitView(originalLines, diff)
                     }
                 }
             }
         }
     }
+
 
     private fun TBODY.deletedView() = tr {
         td("code-cell") { +"The file was deleted." }
@@ -288,7 +302,12 @@ class GitDiffReportGenerator : DiffReportGenerator {
                 width = 100.percent
                 marginTop = 10.px
                 marginBottom = 10.px
+
             }
+            ".tr" {
+
+            }
+
             ".diff-table-split" {
                 tableLayout = FIXED
             }
@@ -329,6 +348,7 @@ class GitDiffReportGenerator : DiffReportGenerator {
             ".code-cell" {
                 whiteSpace = PRE_WRAP
                 wordWrap = BREAK
+                overflow = SCROLL
             }
             ".change-cell" {
                 width = 20.px

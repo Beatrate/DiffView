@@ -4,5 +4,5 @@ import com.beatrate.diffview.common.Commit
 import java.io.File
 
 interface DiffReportGenerator {
-    fun generate(originalFile: File, reportFile: File, commit: Commit, mode: ReportMode)
+    fun generate(originalFiles: List<File>, reportFile: File, commit: Commit, mode: ReportMode)
 }

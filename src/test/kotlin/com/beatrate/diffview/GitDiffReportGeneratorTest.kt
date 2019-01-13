@@ -1,5 +1,6 @@
 package com.beatrate.diffview
 
+import com.beatrate.diffview.generator.DiffReportGenerator
 import com.beatrate.diffview.generator.GitDiffReportGenerator
 import com.beatrate.diffview.generator.ReportMode
 import com.beatrate.diffview.parser.GitDiffParser
@@ -8,7 +9,7 @@ import org.junit.Test
 import java.io.File
 import kotlin.test.assertEquals
 
-class GitDiffReportGeneratorTest {
+class DiffReportGeneratorTest {
     @Test
     fun test() {
         val patch = File("src/test/resources/OneFileMultipleHunksToShortStory.patch")
@@ -21,6 +22,32 @@ class GitDiffReportGeneratorTest {
         generate(
             "src/test/resources/original/VeryShortWorldStory.txt",
             "target/split.html",
+            patch.absolutePath,
+            ReportMode.SPLIT
+        )
+    }
+
+    @Test
+    fun multipleFiles() {
+        val commit = GitDiffParser().parse(File("src/test/resources/twoFiles.patch"))
+        GitDiffReportGenerator().generate(listOf(File("src/test/resources/original/RoutesController.cs"),
+            File("src/test/resources/original/Trainload.xml")), File("2report.html"), commit, ReportMode.SPLIT)
+
+    }
+
+
+    @Test
+    fun renamingTest() {
+        val patch = File("src/test/resources/RenameFile.patch")
+        generate(
+            "src/test/resources/original/toRename.txt",
+            "target/renamedUnified.html",
+            patch.absolutePath,
+            ReportMode.UNIFIED
+        )
+        generate(
+            "src/test/resources/original/toRename.txt",
+            "target/renamedSplit.html",
             patch.absolutePath,
             ReportMode.SPLIT
         )
@@ -103,6 +130,69 @@ class GitDiffReportGeneratorTest {
         assertLines(expected, original, patch, ReportMode.SPLIT)
     }
 
+    @Test
+    fun onlyAddedUnified() {
+        val original = File("src/test/resources/original/FirstTest.txt")
+        val patch = File("src/test/resources/3LinesAdded.patch")
+        val expected = listOf(
+            listOf(""),
+            listOf("Finite incantantem"),
+            listOf("Avada Cedavra"),
+            listOf("Alahamora")
+        )
+        assertLines(expected, original, patch, ReportMode.UNIFIED)
+    }
+
+    @Test
+    fun onlyDeletedUnified() {
+        val original = File("src/test/resources/original/ThirdTest.txt")
+        val patch = File("src/test/resources/3LinesDeleted.patch")
+        val expected = listOf(
+            listOf(""),
+            listOf("del"),
+            listOf("del"),
+            listOf("del")
+        )
+        assertLines(expected, original, patch, ReportMode.UNIFIED)
+    }
+
+    @Test
+    fun deletedTwoAndAddedOneUnified() {
+        val original = File("src/test/resources/original/SecondTest.txt")
+        val patch = File("src/test/resources/2Deleted_1Added.patch")
+        val expected = listOf(
+            listOf("del"),
+            listOf("del"),
+            listOf("add")
+        )
+        assertLines(expected, original, patch, ReportMode.UNIFIED)
+    }
+
+    @Test
+    fun deletedTwoAndAddedTwoUnified() {
+        val original = File("src/test/resources/original/FourthTest.txt")
+        val patch = File("src/test/resources/2Deleted_2Added.patch")
+        val expected = listOf(
+            listOf("del"),
+            listOf("del"),
+            listOf("add"),
+            listOf("add")
+        )
+        assertLines(expected, original, patch, ReportMode.UNIFIED)
+    }
+
+    @Test
+    fun deletedOneAndAddedTwoUnified() {
+        val original = File("src/test/resources/original/FifthTest.txt")
+        val patch = File("src/test/resources/1Deleted_2Added.patch")
+        val expected = listOf(
+            listOf("del"),
+            listOf("add"),
+            listOf("add")
+        )
+        assertLines(expected, original, patch, ReportMode.UNIFIED)
+    }
+
 
     @Test
     fun deletedAddedAndStaticUnified() {
@@ -123,15 +213,24 @@ class GitDiffReportGeneratorTest {
     }
 
 
+    @Test
+    fun renameFile() {
+        val original = File("src/test/resources/original/toRename.txt")
+        val patch = File("src/test/resources/RenameFile.patch")
+        assertEquals(false, assertFileName(original, patch, ReportMode.UNIFIED), "names are equal.")
+        assertEquals(false, assertFileName(original, patch, ReportMode.SPLIT), "names are equal.")
+    }
+
+
     private fun parse(path: String) = GitDiffParser().parse(File(path))
 
     private fun parse(file: File) = GitDiffParser().parse(file)
 
     private fun generate(originalPath: String, reportPath: String, patchPath: String, mode: ReportMode) =
-        GitDiffReportGenerator().generate(File(originalPath), File(reportPath), parse(patchPath), mode)
+        GitDiffReportGenerator().generate(listOf(File(originalPath)), File(reportPath), parse(patchPath), mode)
 
     private fun generate(originalFile: File, reportFile: File, patchFile: File, mode: ReportMode) =
-        GitDiffReportGenerator().generate(originalFile, reportFile, parse(patchFile), mode)
+        GitDiffReportGenerator().generate(listOf(originalFile), reportFile, parse(patchFile), mode)
 
     private fun createFile(action: (File) -> Unit) {
         val file = File.createTempFile("temp", "html")
@@ -155,5 +254,18 @@ class GitDiffReportGeneratorTest {
                 assertLines(expected, lines)
             }
         }
+    }
+
+
+    private fun assertFileName(originalFile: File, patchFile: File, mode: ReportMode): Boolean {
+        var equalNames = false
+        createFile { report ->
+            generate(originalFile, report, patchFile, mode)
+            Jsoup.parse(report, Charsets.UTF_8.name(), "").run {
+                val name = select("title").first()
+                if (name.className() == originalFile.name) equalNames = true
+            }
+        }
+        return equalNames
     }
 }

@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Trainload</name>
+    </assembly>
+    <members>
+        <member name="M:Trainload.Controllers.AuthController.Login(Trainload.DataLayer.CredentialsDTO)">
+            <summary>
+            Log in as a user.
+            </summary>
+        </member>
+        <member name="M:Trainload.Controllers.LocationsController.GetLocations">
+            <summary>
+            Returns all existing locations: cities, towns.
+            </summary>
+        </member>
+        <member name="M:Trainload.Controllers.LocationsController.GetLocation(System.Int32)">
+            <summary>
+            Returns info about the location.
+            </summary>
+            <param name="id">Location id.</param>
+        </member>
+        <member name="M:Trainload.Controllers.RoutesController.GetRoutes(System.String,System.String,System.DateTime)">
+            <summary>
+            Finds all routes from the destination to the location in specified time.
+            </summary>
+            <param name="origin">Name of origin location.</param>
+            <param name="destination">Name of destination location.</param>
+            <param name="date">Date of departure. Time is ignored.</param>
+        </member>
+        <member name="M:Trainload.Controllers.RoutesController.GetRoute(System.Int32)">
+            <summary>
+            Gets booking data for a route.
+            </summary>
+            <param name="id">Route id.</param>
+        </member>
+        <member name="M:Trainload.Controllers.UsersController.RegisterUser(Trainload.DataLayer.RegistrationDTO)">
+            <summary>
+            Registers a new user.
+            </summary>
+        </member>
+        <member name="M:Trainload.Controllers.UsersController.GetUserData">
+            <summary>
+            Returns user's data.
+            </summary>
+        </member>
+        <member name="M:Trainload.Controllers.UsersController.UpdateUser(Trainload.DataLayer.UserDataDTO)">
+            <summary>
+            Changes user's data.
+            </summary>
+        </member>
+        <member name="M:Trainload.Controllers.UsersController.ChangePassword(Trainload.DataLayer.PasswordChangeDTO)">
+            <summary>
+            Changes user's password.
+            </summary>
+        </member>
+        <member name="T:Trainload.Helpers.RDSUtility">
+            <summary>
+            AWS RDS helper.
+            </summary>
+        </member>
+        <member name="M:Trainload.Helpers.RDSUtility.GetConnectionString">
+            <summary>
+            Gets the connection string for the embedded database.
+            </summary>
+        </member>
+        <member name="M:Trainload.Helpers.RDSUtility.SetEnvironmentVariables">
+            <summary>
+            Workaround of Elastic Beanstalk environment variables not being set in .NET Core.
+            Source: https://stackoverflow.com/a/49615749
+            </summary>
+        </member>
+    </members>
+</doc>

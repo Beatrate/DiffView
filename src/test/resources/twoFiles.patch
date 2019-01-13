@@ -1,0 +1,51 @@
+From 33edff1f29cc173479b2843aa25b2e67f03dbcc6 Mon Sep 17 00:00:00 2001
+From: Nikita Ivanov <inik4us@gmail.com>
+Date: Mon, 17 Dec 2018 23:54:12 +0300
+Subject: [PATCH] Fixed date handling.
+
+---
+ Trainload/Controllers/RoutesController.cs | 8 ++++----
+ Trainload/Trainload.xml                   | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/Trainload/Controllers/RoutesController.cs b/Trainload/Controllers/RoutesController.cs
+index 7f052c9..a1f4f34 100644
+--- a/Trainload/Controllers/RoutesController.cs
++++ b/Trainload/Controllers/RoutesController.cs
+@@ -30,11 +30,11 @@ public RoutesController(IMapper mapper, TrainloadContext context)
+ 		/// </summary>
+ 		/// <param name="origin">Name of origin location.</param>
+ 		/// <param name="destination">Name of destination location.</param>
+-		/// <param name="time">Date of departure</param>
+-		[HttpGet("{origin}/{destination}/{time}")]
++		/// <param name="date">Date of departure. Time is ignored.</param>
++		[HttpGet("{origin}/{destination}/{date}")]
+ 		[ProducesResponseType(400)]
+ 		[ProducesResponseType(typeof(RouteCatalogDTO), 200)]
+-		public IActionResult GetRoutes(string origin, string destination, DateTime time)
++		public IActionResult GetRoutes(string origin, string destination, DateTime date)
+ 		{
+ 			if(!ModelState.IsValid)
+ 			{
+@@ -47,7 +47,7 @@ public IActionResult GetRoutes(string origin, string destination, DateTime time)
+ 							.ThenInclude(station => station.Location)
+ 						.Include(route => route.Train)
+ 						where route.OriginStation.Location.Name == origin && route.DestinationStation.Location.Name == destination
+-						&& route.DepartureTime >= time
++						&& route.DepartureTime.Date == date.Date
+ 						select route;
+ 			//var routes = from route in context.Routes
+ 			//			 join originStation in context.Stations on route.OriginStationId equals originStation.Id
+diff --git a/Trainload/Trainload.xml b/Trainload/Trainload.xml
+index 2d388b5..c800db5 100644
+--- a/Trainload/Trainload.xml
++++ b/Trainload/Trainload.xml
+@@ -26,7 +26,7 @@
+             </summary>
+             <param name="origin">Name of origin location.</param>
+             <param name="destination">Name of destination location.</param>
+-            <param name="time">Date of departure</param>
++            <param name="date">Date of departure. Time is ignored.</param>
+         </member>
+         <member name="M:Trainload.Controllers.RoutesController.GetRoute(System.Int32)">
+             <summary>

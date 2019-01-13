@@ -1,0 +1,1715 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Fixed date handling.</title>
+    <style>*{margin:0;padding:0}.container{padding-left:20px;padding-right:20px;font-family:Verdana, Geneva, sans-serif}.commit{background:#eaf5ff;border-width:1px;border-style:solid;border-color:rgba(27,31,35,.15);margin:10px 0}.commit-title{font-size:18px;color:#05264c;padding:8px}.commit-meta{background-color:#fff;font-size:14px;padding:8px}.diff-view{border-width:1px;border-radius:3px;border-style:solid;border-color:#ddd}.file-header{background-color:#fafbfc;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#e1e4e8;padding:5px 10px;font-size:12px}.diff-table{border-collapse:collapse;width:100%;margin-top:10px;margin-bottom:10px}.diff-table-split{table-layout:fixed}.line-cell, .code-cell, .change-cell{font-family:'Courier New',Courier,monospace;font-size:14px;line-height:20px}.line-cell{min-width:30px;width:1%;color:rgba(27,31,35,.3);text-align:right;padding-left:10px;padding-right:10px;overflow:hidden;text-overflow:ellipsis}.added{background-color:#e6ffed}.added.line-cell{background-color:#cdffd8}.deleted{background-color:#ffeef0}.empty{background-color:#f5f5f5}.deleted.line-cell{background-color:#ffdce0}.diff-table-split.line-cell{width:40px}.code-cell{white-space:pre-wrap;word-wrap:break;overflow:scroll}.change-cell{width:20px;text-align:center}</style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="commit">
+        <p class="commit-title">Fixed date handling.</p>
+        <div class="commit-meta">
+          <p>Nikita Ivanov commited on дек. 17, 2018</p>
+        </div>
+      </div>
+      <div class="diff-view">
+        <div class="file-header">
+          <p>Trainload/Controllers/RoutesController.cs</p>
+        </div>
+        <table class="diff-table">
+          <tbody class="diff-table-split">
+            <tr>
+              <td class="line-cell">1</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">﻿using System;</td>
+              <td class="line-cell">1</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">﻿using System;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">2</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using System.Net;</td>
+              <td class="line-cell">2</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using System.Net;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">3</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using System.Collections.Generic;</td>
+              <td class="line-cell">3</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using System.Collections.Generic;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">4</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using System.Linq;</td>
+              <td class="line-cell">4</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using System.Linq;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">5</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using System.Threading.Tasks;</td>
+              <td class="line-cell">5</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using System.Threading.Tasks;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">6</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using Microsoft.AspNetCore.Mvc;</td>
+              <td class="line-cell">6</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using Microsoft.AspNetCore.Mvc;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">7</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using Microsoft.EntityFrameworkCore;</td>
+              <td class="line-cell">7</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using Microsoft.EntityFrameworkCore;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">8</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using AutoMapper;</td>
+              <td class="line-cell">8</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using AutoMapper;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">9</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using Trainload.Models;</td>
+              <td class="line-cell">9</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using Trainload.Models;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">10</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using Trainload.DataLayer;</td>
+              <td class="line-cell">10</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using Trainload.DataLayer;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">11</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using Trainload.Helpers;</td>
+              <td class="line-cell">11</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">using Trainload.Helpers;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">12</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+              <td class="line-cell">12</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+            </tr>
+            <tr>
+              <td class="line-cell">13</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">namespace Trainload.Controllers</td>
+              <td class="line-cell">13</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">namespace Trainload.Controllers</td>
+            </tr>
+            <tr>
+              <td class="line-cell">14</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">{</td>
+              <td class="line-cell">14</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">{</td>
+            </tr>
+            <tr>
+              <td class="line-cell">15</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">	[Produces(&quot;application/json&quot;)]</td>
+              <td class="line-cell">15</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">	[Produces(&quot;application/json&quot;)]</td>
+            </tr>
+            <tr>
+              <td class="line-cell">16</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">	[Route(&quot;api/[controller]&quot;)]</td>
+              <td class="line-cell">16</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">	[Route(&quot;api/[controller]&quot;)]</td>
+            </tr>
+            <tr>
+              <td class="line-cell">17</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">	public class RoutesController : ControllerBase</td>
+              <td class="line-cell">17</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">	public class RoutesController : ControllerBase</td>
+            </tr>
+            <tr>
+              <td class="line-cell">18</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">	{</td>
+              <td class="line-cell">18</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">	{</td>
+            </tr>
+            <tr>
+              <td class="line-cell">19</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		private readonly IMapper mapper;</td>
+              <td class="line-cell">19</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		private readonly IMapper mapper;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">20</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		private readonly TrainloadContext context;</td>
+              <td class="line-cell">20</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		private readonly TrainloadContext context;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">21</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+              <td class="line-cell">21</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+            </tr>
+            <tr>
+              <td class="line-cell">22</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		public RoutesController(IMapper mapper, TrainloadContext context)</td>
+              <td class="line-cell">22</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		public RoutesController(IMapper mapper, TrainloadContext context)</td>
+            </tr>
+            <tr>
+              <td class="line-cell">23</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		{</td>
+              <td class="line-cell">23</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		{</td>
+            </tr>
+            <tr>
+              <td class="line-cell">24</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			this.mapper = mapper;</td>
+              <td class="line-cell">24</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			this.mapper = mapper;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">25</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			this.context = context;</td>
+              <td class="line-cell">25</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			this.context = context;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">26</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		}</td>
+              <td class="line-cell">26</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		}</td>
+            </tr>
+            <tr>
+              <td class="line-cell">27</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+              <td class="line-cell">27</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+            </tr>
+            <tr>
+              <td class="line-cell">28</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		/// &lt;summary&gt;</td>
+              <td class="line-cell">28</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		/// &lt;summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">29</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		/// Finds all routes from the destination to the location in specified time.</td>
+              <td class="line-cell">29</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		/// Finds all routes from the destination to the location in specified time.</td>
+            </tr>
+            <tr>
+              <td class="line-cell">30</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		/// &lt;/summary&gt;</td>
+              <td class="line-cell">30</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		/// &lt;/summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">31</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		/// &lt;param name=&quot;origin&quot;&gt;Name of origin location.&lt;/param&gt;</td>
+              <td class="line-cell">31</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		/// &lt;param name=&quot;origin&quot;&gt;Name of origin location.&lt;/param&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">32</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		/// &lt;param name=&quot;destination&quot;&gt;Name of destination location.&lt;/param&gt;</td>
+              <td class="line-cell">32</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		/// &lt;param name=&quot;destination&quot;&gt;Name of destination location.&lt;/param&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell deleted">33</td>
+              <td class="change-cell deleted">-</td>
+              <td class="code-cell deleted">		/// &lt;param name=&quot;time&quot;&gt;Date of departure&lt;/param&gt;</td>
+              <td class="line-cell added">33</td>
+              <td class="change-cell added">+</td>
+              <td class="code-cell added">		/// &lt;param name=&quot;date&quot;&gt;Date of departure. Time is ignored.&lt;/param&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell deleted">34</td>
+              <td class="change-cell deleted">-</td>
+              <td class="code-cell deleted">		[HttpGet(&quot;{origin}/{destination}/{time}&quot;)]</td>
+              <td class="line-cell added">34</td>
+              <td class="change-cell added">+</td>
+              <td class="code-cell added">		[HttpGet(&quot;{origin}/{destination}/{date}&quot;)]</td>
+            </tr>
+            <tr>
+              <td class="line-cell">35</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		[ProducesResponseType(400)]</td>
+              <td class="line-cell">35</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		[ProducesResponseType(400)]</td>
+            </tr>
+            <tr>
+              <td class="line-cell">36</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		[ProducesResponseType(typeof(RouteCatalogDTO), 200)]</td>
+              <td class="line-cell">36</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		[ProducesResponseType(typeof(RouteCatalogDTO), 200)]</td>
+            </tr>
+            <tr>
+              <td class="line-cell deleted">37</td>
+              <td class="change-cell deleted">-</td>
+              <td class="code-cell deleted">		public IActionResult GetRoutes(string origin, string destination, DateTime time)</td>
+              <td class="line-cell added">37</td>
+              <td class="change-cell added">+</td>
+              <td class="code-cell added">		public IActionResult GetRoutes(string origin, string destination, DateTime date)</td>
+            </tr>
+            <tr>
+              <td class="line-cell">38</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		{</td>
+              <td class="line-cell">38</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		{</td>
+            </tr>
+            <tr>
+              <td class="line-cell">39</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			if(!ModelState.IsValid)</td>
+              <td class="line-cell">39</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			if(!ModelState.IsValid)</td>
+            </tr>
+            <tr>
+              <td class="line-cell">40</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			{</td>
+              <td class="line-cell">40</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			{</td>
+            </tr>
+            <tr>
+              <td class="line-cell">41</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				return BadRequest(ModelState);</td>
+              <td class="line-cell">41</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				return BadRequest(ModelState);</td>
+            </tr>
+            <tr>
+              <td class="line-cell">42</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			}</td>
+              <td class="line-cell">42</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			}</td>
+            </tr>
+            <tr>
+              <td class="line-cell">43</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			var query = from route in context.Routes</td>
+              <td class="line-cell">43</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			var query = from route in context.Routes</td>
+            </tr>
+            <tr>
+              <td class="line-cell">44</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">						.Include(route =&gt; route.OriginStation)</td>
+              <td class="line-cell">44</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">						.Include(route =&gt; route.OriginStation)</td>
+            </tr>
+            <tr>
+              <td class="line-cell">45</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">							.ThenInclude(station =&gt; station.Location)</td>
+              <td class="line-cell">45</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">							.ThenInclude(station =&gt; station.Location)</td>
+            </tr>
+            <tr>
+              <td class="line-cell">46</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">						.Include(route =&gt; route.DestinationStation)</td>
+              <td class="line-cell">46</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">						.Include(route =&gt; route.DestinationStation)</td>
+            </tr>
+            <tr>
+              <td class="line-cell">47</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">							.ThenInclude(station =&gt; station.Location)</td>
+              <td class="line-cell">47</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">							.ThenInclude(station =&gt; station.Location)</td>
+            </tr>
+            <tr>
+              <td class="line-cell">48</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">						.Include(route =&gt; route.Train)</td>
+              <td class="line-cell">48</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">						.Include(route =&gt; route.Train)</td>
+            </tr>
+            <tr>
+              <td class="line-cell">49</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">						where route.OriginStation.Location.Name == origin &amp;&amp; route.DestinationStation.Location.Name == destination</td>
+              <td class="line-cell">49</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">						where route.OriginStation.Location.Name == origin &amp;&amp; route.DestinationStation.Location.Name == destination</td>
+            </tr>
+            <tr>
+              <td class="line-cell deleted">50</td>
+              <td class="change-cell deleted">-</td>
+              <td class="code-cell deleted">						&amp;&amp; route.DepartureTime &gt;= time</td>
+              <td class="line-cell added">50</td>
+              <td class="change-cell added">+</td>
+              <td class="code-cell added">						&amp;&amp; route.DepartureTime.Date == date.Date</td>
+            </tr>
+            <tr>
+              <td class="line-cell">51</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">						select route;</td>
+              <td class="line-cell">51</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">						select route;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">52</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			//var routes = from route in context.Routes</td>
+              <td class="line-cell">52</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			//var routes = from route in context.Routes</td>
+            </tr>
+            <tr>
+              <td class="line-cell">53</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			//			 join originStation in context.Stations on route.OriginStationId equals originStation.Id</td>
+              <td class="line-cell">53</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			//			 join originStation in context.Stations on route.OriginStationId equals originStation.Id</td>
+            </tr>
+            <tr>
+              <td class="line-cell">54</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			//			 join originLocation in context.Locations on originStation.LocationId equals originLocation.Id</td>
+              <td class="line-cell">54</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			//			 join originLocation in context.Locations on originStation.LocationId equals originLocation.Id</td>
+            </tr>
+            <tr>
+              <td class="line-cell">55</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			//			 join destinationStation in context.Stations on route.DestinationStationId equals destinationStation.Id</td>
+              <td class="line-cell">55</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			//			 join destinationStation in context.Stations on route.DestinationStationId equals destinationStation.Id</td>
+            </tr>
+            <tr>
+              <td class="line-cell">56</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			//			 join destinationLocation in context.Locations on destinationStation.LocationId equals destinationLocation.Id</td>
+              <td class="line-cell">56</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			//			 join destinationLocation in context.Locations on destinationStation.LocationId equals destinationLocation.Id</td>
+            </tr>
+            <tr>
+              <td class="line-cell">57</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			//			 where originLocation.Name == origin &amp;&amp; destinationLocation.Name == destination</td>
+              <td class="line-cell">57</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			//			 where originLocation.Name == origin &amp;&amp; destinationLocation.Name == destination</td>
+            </tr>
+            <tr>
+              <td class="line-cell">58</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			//			 select route;</td>
+              <td class="line-cell">58</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			//			 select route;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">59</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			var queried = query.AsEnumerable();</td>
+              <td class="line-cell">59</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			var queried = query.AsEnumerable();</td>
+            </tr>
+            <tr>
+              <td class="line-cell">60</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+              <td class="line-cell">60</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+            </tr>
+            <tr>
+              <td class="line-cell">61</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			var routes = new List&lt;RouteDTO&gt;();</td>
+              <td class="line-cell">61</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			var routes = new List&lt;RouteDTO&gt;();</td>
+            </tr>
+            <tr>
+              <td class="line-cell">62</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			var stations = new List&lt;StationDTO&gt;();</td>
+              <td class="line-cell">62</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			var stations = new List&lt;StationDTO&gt;();</td>
+            </tr>
+            <tr>
+              <td class="line-cell">63</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			var locations = new List&lt;LocationDTO&gt;();</td>
+              <td class="line-cell">63</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			var locations = new List&lt;LocationDTO&gt;();</td>
+            </tr>
+            <tr>
+              <td class="line-cell">64</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			if(queried.Any())</td>
+              <td class="line-cell">64</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			if(queried.Any())</td>
+            </tr>
+            <tr>
+              <td class="line-cell">65</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			{</td>
+              <td class="line-cell">65</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			{</td>
+            </tr>
+            <tr>
+              <td class="line-cell">66</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				Route first = queried.First();</td>
+              <td class="line-cell">66</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				Route first = queried.First();</td>
+            </tr>
+            <tr>
+              <td class="line-cell">67</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				locations.Add(mapper.Map&lt;LocationDTO&gt;(first.OriginStation.Location));</td>
+              <td class="line-cell">67</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				locations.Add(mapper.Map&lt;LocationDTO&gt;(first.OriginStation.Location));</td>
+            </tr>
+            <tr>
+              <td class="line-cell">68</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				locations.Add(mapper.Map&lt;LocationDTO&gt;(first.DestinationStation.Location));</td>
+              <td class="line-cell">68</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				locations.Add(mapper.Map&lt;LocationDTO&gt;(first.DestinationStation.Location));</td>
+            </tr>
+            <tr>
+              <td class="line-cell">69</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			}</td>
+              <td class="line-cell">69</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			}</td>
+            </tr>
+            <tr>
+              <td class="line-cell">70</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			var trains = new List&lt;TrainDTO&gt;();</td>
+              <td class="line-cell">70</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			var trains = new List&lt;TrainDTO&gt;();</td>
+            </tr>
+            <tr>
+              <td class="line-cell">71</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			foreach(Route route in queried)</td>
+              <td class="line-cell">71</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			foreach(Route route in queried)</td>
+            </tr>
+            <tr>
+              <td class="line-cell">72</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			{</td>
+              <td class="line-cell">72</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			{</td>
+            </tr>
+            <tr>
+              <td class="line-cell">73</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				routes.Add(mapper.Map&lt;RouteDTO&gt;(route));</td>
+              <td class="line-cell">73</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				routes.Add(mapper.Map&lt;RouteDTO&gt;(route));</td>
+            </tr>
+            <tr>
+              <td class="line-cell">74</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				if(!stations.Exists(station =&gt; station.Id == route.OriginStationId))</td>
+              <td class="line-cell">74</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				if(!stations.Exists(station =&gt; station.Id == route.OriginStationId))</td>
+            </tr>
+            <tr>
+              <td class="line-cell">75</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				{</td>
+              <td class="line-cell">75</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				{</td>
+            </tr>
+            <tr>
+              <td class="line-cell">76</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">					stations.Add(mapper.Map&lt;StationDTO&gt;(route.OriginStation));</td>
+              <td class="line-cell">76</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">					stations.Add(mapper.Map&lt;StationDTO&gt;(route.OriginStation));</td>
+            </tr>
+            <tr>
+              <td class="line-cell">77</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				}</td>
+              <td class="line-cell">77</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				}</td>
+            </tr>
+            <tr>
+              <td class="line-cell">78</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				if(!stations.Exists(station =&gt; station.Id == route.DestinationStationId))</td>
+              <td class="line-cell">78</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				if(!stations.Exists(station =&gt; station.Id == route.DestinationStationId))</td>
+            </tr>
+            <tr>
+              <td class="line-cell">79</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				{</td>
+              <td class="line-cell">79</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				{</td>
+            </tr>
+            <tr>
+              <td class="line-cell">80</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">					stations.Add(mapper.Map&lt;StationDTO&gt;(route.DestinationStation));</td>
+              <td class="line-cell">80</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">					stations.Add(mapper.Map&lt;StationDTO&gt;(route.DestinationStation));</td>
+            </tr>
+            <tr>
+              <td class="line-cell">81</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				}</td>
+              <td class="line-cell">81</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				}</td>
+            </tr>
+            <tr>
+              <td class="line-cell">82</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				if(!trains.Exists(train =&gt; train.Id == route.TrainId))</td>
+              <td class="line-cell">82</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				if(!trains.Exists(train =&gt; train.Id == route.TrainId))</td>
+            </tr>
+            <tr>
+              <td class="line-cell">83</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				{</td>
+              <td class="line-cell">83</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				{</td>
+            </tr>
+            <tr>
+              <td class="line-cell">84</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">					trains.Add(mapper.Map&lt;TrainDTO&gt;(route.Train));</td>
+              <td class="line-cell">84</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">					trains.Add(mapper.Map&lt;TrainDTO&gt;(route.Train));</td>
+            </tr>
+            <tr>
+              <td class="line-cell">85</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				}</td>
+              <td class="line-cell">85</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				}</td>
+            </tr>
+            <tr>
+              <td class="line-cell">86</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			}</td>
+              <td class="line-cell">86</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			}</td>
+            </tr>
+            <tr>
+              <td class="line-cell">87</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+              <td class="line-cell">87</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+            </tr>
+            <tr>
+              <td class="line-cell">88</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			var catalog = new RouteCatalogDTO { Routes = routes, Stations = stations, Locations = locations, Trains = trains };</td>
+              <td class="line-cell">88</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			var catalog = new RouteCatalogDTO { Routes = routes, Stations = stations, Locations = locations, Trains = trains };</td>
+            </tr>
+            <tr>
+              <td class="line-cell">89</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			return Ok(catalog);</td>
+              <td class="line-cell">89</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			return Ok(catalog);</td>
+            </tr>
+            <tr>
+              <td class="line-cell">90</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		}</td>
+              <td class="line-cell">90</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		}</td>
+            </tr>
+            <tr>
+              <td class="line-cell">91</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+              <td class="line-cell">91</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+            </tr>
+            <tr>
+              <td class="line-cell">92</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		/// &lt;summary&gt;</td>
+              <td class="line-cell">92</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		/// &lt;summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">93</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		/// Gets booking data for a route.</td>
+              <td class="line-cell">93</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		/// Gets booking data for a route.</td>
+            </tr>
+            <tr>
+              <td class="line-cell">94</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		/// &lt;/summary&gt;</td>
+              <td class="line-cell">94</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		/// &lt;/summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">95</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		/// &lt;param name=&quot;id&quot;&gt;Route id.&lt;/param&gt;</td>
+              <td class="line-cell">95</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		/// &lt;param name=&quot;id&quot;&gt;Route id.&lt;/param&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">96</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		[HttpGet(&quot;{id}&quot;)]</td>
+              <td class="line-cell">96</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		[HttpGet(&quot;{id}&quot;)]</td>
+            </tr>
+            <tr>
+              <td class="line-cell">97</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		[ProducesResponseType(400)]</td>
+              <td class="line-cell">97</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		[ProducesResponseType(400)]</td>
+            </tr>
+            <tr>
+              <td class="line-cell">98</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		[ProducesResponseType(404)]</td>
+              <td class="line-cell">98</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		[ProducesResponseType(404)]</td>
+            </tr>
+            <tr>
+              <td class="line-cell">99</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		[ProducesResponseType(typeof(RouteStateDTO), 200)]</td>
+              <td class="line-cell">99</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		[ProducesResponseType(typeof(RouteStateDTO), 200)]</td>
+            </tr>
+            <tr>
+              <td class="line-cell">100</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		public async Task&lt;IActionResult&gt; GetRoute(int id)</td>
+              <td class="line-cell">100</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		public async Task&lt;IActionResult&gt; GetRoute(int id)</td>
+            </tr>
+            <tr>
+              <td class="line-cell">101</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		{</td>
+              <td class="line-cell">101</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		{</td>
+            </tr>
+            <tr>
+              <td class="line-cell">102</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			if(!ModelState.IsValid)</td>
+              <td class="line-cell">102</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			if(!ModelState.IsValid)</td>
+            </tr>
+            <tr>
+              <td class="line-cell">103</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			{</td>
+              <td class="line-cell">103</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			{</td>
+            </tr>
+            <tr>
+              <td class="line-cell">104</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				return BadRequest(ModelState);</td>
+              <td class="line-cell">104</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				return BadRequest(ModelState);</td>
+            </tr>
+            <tr>
+              <td class="line-cell">105</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			}</td>
+              <td class="line-cell">105</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			}</td>
+            </tr>
+            <tr>
+              <td class="line-cell">106</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+              <td class="line-cell">106</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+            </tr>
+            <tr>
+              <td class="line-cell">107</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			Route route = await context.Routes.FindAsync(id);</td>
+              <td class="line-cell">107</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			Route route = await context.Routes.FindAsync(id);</td>
+            </tr>
+            <tr>
+              <td class="line-cell">108</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			if(route == null)</td>
+              <td class="line-cell">108</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			if(route == null)</td>
+            </tr>
+            <tr>
+              <td class="line-cell">109</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			{</td>
+              <td class="line-cell">109</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			{</td>
+            </tr>
+            <tr>
+              <td class="line-cell">110</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				return NotFound();</td>
+              <td class="line-cell">110</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				return NotFound();</td>
+            </tr>
+            <tr>
+              <td class="line-cell">111</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			}</td>
+              <td class="line-cell">111</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			}</td>
+            </tr>
+            <tr>
+              <td class="line-cell">112</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+              <td class="line-cell">112</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+            </tr>
+            <tr>
+              <td class="line-cell">113</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			var bookedCars =</td>
+              <td class="line-cell">113</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			var bookedCars =</td>
+            </tr>
+            <tr>
+              <td class="line-cell">114</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				from car in context.Cars</td>
+              <td class="line-cell">114</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				from car in context.Cars</td>
+            </tr>
+            <tr>
+              <td class="line-cell">115</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				where car.TrainId == route.TrainId</td>
+              <td class="line-cell">115</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				where car.TrainId == route.TrainId</td>
+            </tr>
+            <tr>
+              <td class="line-cell">116</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				join booking in context.Bookings on car.Id equals booking.CarId into carGroup</td>
+              <td class="line-cell">116</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				join booking in context.Bookings on car.Id equals booking.CarId into carGroup</td>
+            </tr>
+            <tr>
+              <td class="line-cell">117</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				from carBooking in carGroup.DefaultIfEmpty()</td>
+              <td class="line-cell">117</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				from carBooking in carGroup.DefaultIfEmpty()</td>
+            </tr>
+            <tr>
+              <td class="line-cell">118</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				select new { Car = car, Bookings = carGroup };</td>
+              <td class="line-cell">118</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				select new { Car = car, Bookings = carGroup };</td>
+            </tr>
+            <tr>
+              <td class="line-cell">119</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+              <td class="line-cell">119</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+            </tr>
+            <tr>
+              <td class="line-cell">120</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			var stateCars = new List&lt;CarDTO&gt;();</td>
+              <td class="line-cell">120</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			var stateCars = new List&lt;CarDTO&gt;();</td>
+            </tr>
+            <tr>
+              <td class="line-cell">121</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			foreach(var bookedCar in bookedCars)</td>
+              <td class="line-cell">121</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			foreach(var bookedCar in bookedCars)</td>
+            </tr>
+            <tr>
+              <td class="line-cell">122</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			{</td>
+              <td class="line-cell">122</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			{</td>
+            </tr>
+            <tr>
+              <td class="line-cell">123</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				CarDTO car = mapper.Map&lt;CarDTO&gt;(bookedCar.Car);</td>
+              <td class="line-cell">123</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				CarDTO car = mapper.Map&lt;CarDTO&gt;(bookedCar.Car);</td>
+            </tr>
+            <tr>
+              <td class="line-cell">124</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				var occupied = new List&lt;int&gt;();</td>
+              <td class="line-cell">124</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				var occupied = new List&lt;int&gt;();</td>
+            </tr>
+            <tr>
+              <td class="line-cell">125</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				foreach(Booking booking in bookedCar.Bookings)</td>
+              <td class="line-cell">125</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				foreach(Booking booking in bookedCar.Bookings)</td>
+            </tr>
+            <tr>
+              <td class="line-cell">126</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				{</td>
+              <td class="line-cell">126</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				{</td>
+            </tr>
+            <tr>
+              <td class="line-cell">127</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">					occupied.Add(booking.Seat);</td>
+              <td class="line-cell">127</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">					occupied.Add(booking.Seat);</td>
+            </tr>
+            <tr>
+              <td class="line-cell">128</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				}</td>
+              <td class="line-cell">128</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				}</td>
+            </tr>
+            <tr>
+              <td class="line-cell">129</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				car.OccupiedSeats = occupied;</td>
+              <td class="line-cell">129</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				car.OccupiedSeats = occupied;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">130</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				stateCars.Add(car);</td>
+              <td class="line-cell">130</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">				stateCars.Add(car);</td>
+            </tr>
+            <tr>
+              <td class="line-cell">131</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			}</td>
+              <td class="line-cell">131</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			}</td>
+            </tr>
+            <tr>
+              <td class="line-cell">132</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+              <td class="line-cell">132</td>
+              <td class="change-cell"></td>
+              <td class="code-cell"></td>
+            </tr>
+            <tr>
+              <td class="line-cell">133</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			return Ok(new RouteStateDTO() { Route = mapper.Map&lt;RouteDTO&gt;(route), Cars = stateCars });</td>
+              <td class="line-cell">133</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">			return Ok(new RouteStateDTO() { Route = mapper.Map&lt;RouteDTO&gt;(route), Cars = stateCars });</td>
+            </tr>
+            <tr>
+              <td class="line-cell">134</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		}</td>
+              <td class="line-cell">134</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">		}</td>
+            </tr>
+            <tr>
+              <td class="line-cell">135</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">	}</td>
+              <td class="line-cell">135</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">	}</td>
+            </tr>
+            <tr>
+              <td class="line-cell">136</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">}</td>
+              <td class="line-cell">136</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="diff-view">
+        <div class="file-header">
+          <p>Trainload/Trainload.xml</p>
+        </div>
+        <table class="diff-table">
+          <tbody class="diff-table-split">
+            <tr>
+              <td class="line-cell">1</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">&lt;?xml version=&quot;1.0&quot;?&gt;</td>
+              <td class="line-cell">1</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">&lt;?xml version=&quot;1.0&quot;?&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">2</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">&lt;doc&gt;</td>
+              <td class="line-cell">2</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">&lt;doc&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">3</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">    &lt;assembly&gt;</td>
+              <td class="line-cell">3</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">    &lt;assembly&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">4</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;name&gt;Trainload&lt;/name&gt;</td>
+              <td class="line-cell">4</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;name&gt;Trainload&lt;/name&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">5</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">    &lt;/assembly&gt;</td>
+              <td class="line-cell">5</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">    &lt;/assembly&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">6</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">    &lt;members&gt;</td>
+              <td class="line-cell">6</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">    &lt;members&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">7</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Controllers.AuthController.Login(Trainload.DataLayer.CredentialsDTO)&quot;&gt;</td>
+              <td class="line-cell">7</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Controllers.AuthController.Login(Trainload.DataLayer.CredentialsDTO)&quot;&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">8</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+              <td class="line-cell">8</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">9</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Log in as a user.</td>
+              <td class="line-cell">9</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Log in as a user.</td>
+            </tr>
+            <tr>
+              <td class="line-cell">10</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+              <td class="line-cell">10</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">11</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+              <td class="line-cell">11</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">12</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Controllers.LocationsController.GetLocations&quot;&gt;</td>
+              <td class="line-cell">12</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Controllers.LocationsController.GetLocations&quot;&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">13</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+              <td class="line-cell">13</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">14</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Returns all existing locations: cities, towns.</td>
+              <td class="line-cell">14</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Returns all existing locations: cities, towns.</td>
+            </tr>
+            <tr>
+              <td class="line-cell">15</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+              <td class="line-cell">15</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">16</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+              <td class="line-cell">16</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">17</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Controllers.LocationsController.GetLocation(System.Int32)&quot;&gt;</td>
+              <td class="line-cell">17</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Controllers.LocationsController.GetLocation(System.Int32)&quot;&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">18</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+              <td class="line-cell">18</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">19</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Returns info about the location.</td>
+              <td class="line-cell">19</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Returns info about the location.</td>
+            </tr>
+            <tr>
+              <td class="line-cell">20</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+              <td class="line-cell">20</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">21</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;param name=&quot;id&quot;&gt;Location id.&lt;/param&gt;</td>
+              <td class="line-cell">21</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;param name=&quot;id&quot;&gt;Location id.&lt;/param&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">22</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+              <td class="line-cell">22</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">23</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Controllers.RoutesController.GetRoutes(System.String,System.String,System.DateTime)&quot;&gt;</td>
+              <td class="line-cell">23</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Controllers.RoutesController.GetRoutes(System.String,System.String,System.DateTime)&quot;&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">24</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+              <td class="line-cell">24</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">25</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Finds all routes from the destination to the location in specified time.</td>
+              <td class="line-cell">25</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Finds all routes from the destination to the location in specified time.</td>
+            </tr>
+            <tr>
+              <td class="line-cell">26</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+              <td class="line-cell">26</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">27</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;param name=&quot;origin&quot;&gt;Name of origin location.&lt;/param&gt;</td>
+              <td class="line-cell">27</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;param name=&quot;origin&quot;&gt;Name of origin location.&lt;/param&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">28</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;param name=&quot;destination&quot;&gt;Name of destination location.&lt;/param&gt;</td>
+              <td class="line-cell">28</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;param name=&quot;destination&quot;&gt;Name of destination location.&lt;/param&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell deleted">29</td>
+              <td class="change-cell deleted">-</td>
+              <td class="code-cell deleted">            &lt;param name=&quot;time&quot;&gt;Date of departure&lt;/param&gt;</td>
+              <td class="line-cell added">29</td>
+              <td class="change-cell added">+</td>
+              <td class="code-cell added">            &lt;param name=&quot;date&quot;&gt;Date of departure. Time is ignored.&lt;/param&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">30</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+              <td class="line-cell">30</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">31</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Controllers.RoutesController.GetRoute(System.Int32)&quot;&gt;</td>
+              <td class="line-cell">31</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Controllers.RoutesController.GetRoute(System.Int32)&quot;&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">32</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+              <td class="line-cell">32</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">33</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Gets booking data for a route.</td>
+              <td class="line-cell">33</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Gets booking data for a route.</td>
+            </tr>
+            <tr>
+              <td class="line-cell">34</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+              <td class="line-cell">34</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">35</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;param name=&quot;id&quot;&gt;Route id.&lt;/param&gt;</td>
+              <td class="line-cell">35</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;param name=&quot;id&quot;&gt;Route id.&lt;/param&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">36</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+              <td class="line-cell">36</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">37</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Controllers.UsersController.RegisterUser(Trainload.DataLayer.RegistrationDTO)&quot;&gt;</td>
+              <td class="line-cell">37</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Controllers.UsersController.RegisterUser(Trainload.DataLayer.RegistrationDTO)&quot;&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">38</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+              <td class="line-cell">38</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">39</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Registers a new user.</td>
+              <td class="line-cell">39</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Registers a new user.</td>
+            </tr>
+            <tr>
+              <td class="line-cell">40</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+              <td class="line-cell">40</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">41</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+              <td class="line-cell">41</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">42</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Controllers.UsersController.GetUserData&quot;&gt;</td>
+              <td class="line-cell">42</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Controllers.UsersController.GetUserData&quot;&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">43</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+              <td class="line-cell">43</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">44</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Returns user's data.</td>
+              <td class="line-cell">44</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Returns user's data.</td>
+            </tr>
+            <tr>
+              <td class="line-cell">45</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+              <td class="line-cell">45</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">46</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+              <td class="line-cell">46</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">47</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Controllers.UsersController.UpdateUser(Trainload.DataLayer.UserDataDTO)&quot;&gt;</td>
+              <td class="line-cell">47</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Controllers.UsersController.UpdateUser(Trainload.DataLayer.UserDataDTO)&quot;&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">48</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+              <td class="line-cell">48</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">49</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Changes user's data.</td>
+              <td class="line-cell">49</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Changes user's data.</td>
+            </tr>
+            <tr>
+              <td class="line-cell">50</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+              <td class="line-cell">50</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">51</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+              <td class="line-cell">51</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">52</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Controllers.UsersController.ChangePassword(Trainload.DataLayer.PasswordChangeDTO)&quot;&gt;</td>
+              <td class="line-cell">52</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Controllers.UsersController.ChangePassword(Trainload.DataLayer.PasswordChangeDTO)&quot;&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">53</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+              <td class="line-cell">53</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">54</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Changes user's password.</td>
+              <td class="line-cell">54</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Changes user's password.</td>
+            </tr>
+            <tr>
+              <td class="line-cell">55</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+              <td class="line-cell">55</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">56</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+              <td class="line-cell">56</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">57</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;T:Trainload.Helpers.RDSUtility&quot;&gt;</td>
+              <td class="line-cell">57</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;T:Trainload.Helpers.RDSUtility&quot;&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">58</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+              <td class="line-cell">58</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">59</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            AWS RDS helper.</td>
+              <td class="line-cell">59</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            AWS RDS helper.</td>
+            </tr>
+            <tr>
+              <td class="line-cell">60</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+              <td class="line-cell">60</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">61</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+              <td class="line-cell">61</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">62</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Helpers.RDSUtility.GetConnectionString&quot;&gt;</td>
+              <td class="line-cell">62</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Helpers.RDSUtility.GetConnectionString&quot;&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">63</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+              <td class="line-cell">63</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">64</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Gets the connection string for the embedded database.</td>
+              <td class="line-cell">64</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Gets the connection string for the embedded database.</td>
+            </tr>
+            <tr>
+              <td class="line-cell">65</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+              <td class="line-cell">65</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">66</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+              <td class="line-cell">66</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">67</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Helpers.RDSUtility.SetEnvironmentVariables&quot;&gt;</td>
+              <td class="line-cell">67</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;member name=&quot;M:Trainload.Helpers.RDSUtility.SetEnvironmentVariables&quot;&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">68</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+              <td class="line-cell">68</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">69</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Workaround of Elastic Beanstalk environment variables not being set in .NET Core.</td>
+              <td class="line-cell">69</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Workaround of Elastic Beanstalk environment variables not being set in .NET Core.</td>
+            </tr>
+            <tr>
+              <td class="line-cell">70</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Source: https://stackoverflow.com/a/49615749</td>
+              <td class="line-cell">70</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            Source: https://stackoverflow.com/a/49615749</td>
+            </tr>
+            <tr>
+              <td class="line-cell">71</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+              <td class="line-cell">71</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">            &lt;/summary&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">72</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+              <td class="line-cell">72</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">        &lt;/member&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">73</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">    &lt;/members&gt;</td>
+              <td class="line-cell">73</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">    &lt;/members&gt;</td>
+            </tr>
+            <tr>
+              <td class="line-cell">74</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">&lt;/doc&gt;</td>
+              <td class="line-cell">74</td>
+              <td class="change-cell"></td>
+              <td class="code-cell">&lt;/doc&gt;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
