@@ -45,12 +45,12 @@ class GitDiffReportGenerator : DiffReportGenerator {
     }
 
     private fun DIV.diffs(originalFiles: List<File>, mode: ReportMode, commit: Commit) {
-        for (file in originalFiles) {
-            val diff = commit.diffs.find { file.name == Paths.get(it.oldFile).fileName.toString() }
-                ?: throw DiffReportGenerateException("FILE is not present in diffs.")
-            file.useLines {
-                renderDiff(it, diff, mode)
-            }
+        val fileIterator = originalFiles.iterator()
+        for (diff in commit.diffs) {
+            if (!fileIterator.hasNext()) throw DiffReportGenerateException("FILE not resolved for diff")
+            val file = fileIterator.next()
+            if (file.name != Paths.get(diff.oldFile).fileName.toString()) throw DiffReportGenerateException("FILE name doesn't match diff")
+            file.useLines { renderDiff(it, diff, mode) }
         }
     }
 
@@ -141,8 +141,6 @@ class GitDiffReportGenerator : DiffReportGenerator {
     }
 
     private fun TBODY.splitView(lines: Sequence<String>, diff: Diff) {
-        classes += "diff-table-split"
-
         val lineIterator = lines.iterator()
         var oldIndex = 1
         var newIndex = 1
@@ -302,13 +300,6 @@ class GitDiffReportGenerator : DiffReportGenerator {
                 width = 100.percent
                 marginTop = 10.px
                 marginBottom = 10.px
-
-            }
-            ".tr" {
-
-            }
-
-            ".diff-table-split" {
                 tableLayout = FIXED
             }
             ".line-cell, .code-cell, .change-cell" {
@@ -342,13 +333,12 @@ class GitDiffReportGenerator : DiffReportGenerator {
             ".deleted.line-cell" {
                 backgroundColor = hex("#ffdce0")
             }
-            ".diff-table-split.line-cell" {
+            ".line-cell" {
                 width = 40.px
             }
             ".code-cell" {
                 whiteSpace = PRE_WRAP
-                wordWrap = BREAK
-                overflow = SCROLL
+                overflowWrap = "break-word"
             }
             ".change-cell" {
                 width = 20.px
