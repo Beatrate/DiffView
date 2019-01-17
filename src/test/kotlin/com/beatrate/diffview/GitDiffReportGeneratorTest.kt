@@ -10,6 +10,58 @@ import java.io.File
 import kotlin.test.assertEquals
 
 class DiffReportGeneratorTest {
+
+    private fun parse(path: String) = GitDiffParser().parse(File(path))
+
+    private fun parse(file: File) = GitDiffParser().parse(file)
+
+    private fun generate(originalPath: String, reportPath: String, patchPath: String, mode: ReportMode) =
+        GitDiffReportGenerator().generate(listOf(File(originalPath)), File(reportPath), parse(patchPath), mode)
+
+    private fun generate(originalFile: File, reportFile: File, patchFile: File, mode: ReportMode) =
+        GitDiffReportGenerator().generate(listOf(originalFile), reportFile, parse(patchFile), mode)
+
+    private fun generate(originalFiles: List<File>, reportFile: File, patchFile: File, mode: ReportMode) =
+        GitDiffReportGenerator().generate(originalFiles, reportFile, parse(patchFile), mode)
+
+    private fun createFile(action: (File) -> Unit) {
+        val file = File.createTempFile("temp", "html")
+        action(file)
+        file.deleteOnExit()
+
+    }
+
+    private fun assertLines(expected: List<List<String>>, actual: List<List<String>>) {
+        assertEquals(expected.size, actual.size, "Expected doesn't have the same line count as actual")
+        for (i in 0..expected.lastIndex) {
+            assertEquals(expected[i], actual[i], "Line $i doesn't match")
+        }
+    }
+
+    private fun assertLines(expected: List<List<String>>, originalFile: File, patchFile: File, mode: ReportMode) {
+        createFile { report ->
+            generate(originalFile, report, patchFile, mode)
+            Jsoup.parse(report, Charsets.UTF_8.name(), "").run {
+                val lines = select("table.diff-table").first()
+                    .select("tr").map { it.select("td.code-cell").map { cell -> cell.wholeText() } }
+                assertLines(expected, lines)
+            }
+        }
+    }
+
+
+    private fun assertFileName(originalFile: File, patchFile: File, mode: ReportMode): Boolean {
+        var equalNames = false
+        createFile { report ->
+            generate(originalFile, report, patchFile, mode)
+            Jsoup.parse(report, Charsets.UTF_8.name(), "").run {
+                val name = select("title").first()
+                if (name.className() == originalFile.name) equalNames = true
+            }
+        }
+        return equalNames
+    }
+
     @Test
     fun test() {
         val patch = File("src/test/resources/OneFileMultipleHunksToShortStory.patch")
@@ -29,10 +81,25 @@ class DiffReportGeneratorTest {
 
     @Test
     fun multipleFiles() {
-        val commit = GitDiffParser().parse(File("src/test/resources/twoFiles.patch"))
-        GitDiffReportGenerator().generate(listOf(File("src/test/resources/original/RoutesController.cs"),
-            File("src/test/resources/original/Trainload.xml")), File("2report.html"), commit, ReportMode.SPLIT)
-
+        val patch = File("src/test/resources/twoFiles.patch")
+        generate(
+            listOf(
+                File("src/test/resources/original/RoutesController.cs"),
+                File("src/test/resources/original/Trainload.xml")
+            ),
+            File("target/splitTwoFiles.html"),
+            patch,
+            ReportMode.SPLIT
+        )
+        generate(
+            listOf(
+                File("src/test/resources/original/RoutesController.cs"),
+                File("src/test/resources/original/Trainload.xml")
+            ),
+            File("target/unifiedTwoFiles.html"),
+            patch,
+            ReportMode.UNIFIED
+        )
     }
 
 
@@ -221,51 +288,4 @@ class DiffReportGeneratorTest {
         assertEquals(false, assertFileName(original, patch, ReportMode.SPLIT), "names are equal.")
     }
 
-
-    private fun parse(path: String) = GitDiffParser().parse(File(path))
-
-    private fun parse(file: File) = GitDiffParser().parse(file)
-
-    private fun generate(originalPath: String, reportPath: String, patchPath: String, mode: ReportMode) =
-        GitDiffReportGenerator().generate(listOf(File(originalPath)), File(reportPath), parse(patchPath), mode)
-
-    private fun generate(originalFile: File, reportFile: File, patchFile: File, mode: ReportMode) =
-        GitDiffReportGenerator().generate(listOf(originalFile), reportFile, parse(patchFile), mode)
-
-    private fun createFile(action: (File) -> Unit) {
-        val file = File.createTempFile("temp", "html")
-        action(file)
-        file.deleteOnExit()
-    }
-
-    private fun assertLines(expected: List<List<String>>, actual: List<List<String>>) {
-        assertEquals(expected.size, actual.size, "Expected doesn't have the same line count as actual")
-        for (i in 0..expected.lastIndex) {
-            assertEquals(expected[i], actual[i], "Line $i doesn't match")
-        }
-    }
-
-    private fun assertLines(expected: List<List<String>>, originalFile: File, patchFile: File, mode: ReportMode) {
-        createFile { report ->
-            generate(originalFile, report, patchFile, mode)
-            Jsoup.parse(report, Charsets.UTF_8.name(), "").run {
-                val lines = select("table.diff-table").first()
-                    .select("tr").map { it.select("td.code-cell").map { cell -> cell.wholeText() } }
-                assertLines(expected, lines)
-            }
-        }
-    }
-
-
-    private fun assertFileName(originalFile: File, patchFile: File, mode: ReportMode): Boolean {
-        var equalNames = false
-        createFile { report ->
-            generate(originalFile, report, patchFile, mode)
-            Jsoup.parse(report, Charsets.UTF_8.name(), "").run {
-                val name = select("title").first()
-                if (name.className() == originalFile.name) equalNames = true
-            }
-        }
-        return equalNames
-    }
 }
